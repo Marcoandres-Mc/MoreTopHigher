@@ -21,8 +21,10 @@ export default function DashboardPage() {
     { id: 1, nombre: "Leetcode", url: "https://leetcode.com/u/Marcoandres_23/" },
     { id: 2, nombre: "GitHub", url: "https://github.com/Marcoandres-Mc" },
     { id: 3, nombre: "LinkedIn", url: "https://www.linkedin.com/feed/" },
-    { id: 4, nombre: "Ritual", icono: "▶️", url: "https://www.canva.com/design/DAHJ4Qdz26s/IyFm4t5TFRGG2YTkTp70Ig/edit" },
-    { id: 5, nombre: "Atlaxio", icono: "💬", url: "https://www.atlaxio.com/" },
+    { id: 4, nombre: "Ritual", url: "https://www.canva.com/design/DAHJ4Qdz26s/IyFm4t5TFRGG2YTkTp70Ig/edit" },
+    { id: 5, nombre: "Atlaxio", url: "https://www.atlaxio.com/" },
+    { id: 6, nombre: "Tabla de importancia", url: "https://docs.google.com/document/d/1ruPrwbe-EsvEaNmF5DAjV0HLwOd7-4WJX08vOk3WU3Y/edit?tab=t.0" },
+    { id: 7, nombre: "Tablas de progreso", url: "https://docs.google.com/spreadsheets/d/1q-K0287ABsOhAWaRPxxsAvmcXVAoGW960BZc0xtSijg/edit?gid=547132401#gid=547132401" },
   ]);
 
   const puntajeHabitos = 68;
