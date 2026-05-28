@@ -1,27 +1,22 @@
 // src/components/ScoreCircleUniversity.tsx
 interface ScoreCircleUniversityProps {
-  score: number;           // nota de 1 a 20
-  maxScore?: number;       // máximo posible (por defecto 20)
-  size?: number;           // diámetro en píxeles (default: 140)
-  showPercentage?: boolean; // mostrar porcentaje en el centro (default: true)
-  label?: string;          // texto opcional debajo del círculo
+  score: number;           // nota de 0 a 20
+  maxScore?: number;       // máximo (default 20)
+  size?: number;           // diámetro del círculo (default 140)
+  label?: string;          // texto opcional debajo
 }
 
 export default function ScoreCircleUniversity({
   score,
   maxScore = 20,
   size = 140,
-  showPercentage = true,
   label,
 }: ScoreCircleUniversityProps) {
-  // Calcular porcentaje (ej. 15/20 = 75%)
-  const percentage = (Math.min(score, maxScore) / maxScore) * 100;
+  // Calcular porcentaje (0-100)
+  const percentage = Math.min(100, Math.max(0, (score / maxScore) * 100));
   const radius = (size - 20) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percentage / 100) * circumference;
-
-  // Texto central: porcentaje o nota "15/20"
-  const centerText = showPercentage ? `${Math.round(percentage)}%` : `${score}/${maxScore}`;
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -55,23 +50,20 @@ export default function ScoreCircleUniversity({
             <stop offset="100%" stopColor="#7c3aed" />
           </linearGradient>
         </defs>
-        {/* Texto central */}
+        {/* Texto central: muestra la nota sobre el máximo */}
         <text
           x={size / 2}
           y={size / 2 + 6}
           textAnchor="middle"
-          fontSize={size * 0.18}
+          fontSize={size * 0.2}
           fontWeight="bold"
           fill="#1e293b"
           dominantBaseline="middle"
         >
-          {centerText}
+          {score}
         </text>
       </svg>
       {label && <p className="mt-2 text-sm font-medium text-gray-600">{label}</p>}
-      {!label && showPercentage === false && (
-        <p className="mt-2 text-xs text-gray-500">Nota: {score}/{maxScore}</p>
-      )}
     </div>
   );
 }

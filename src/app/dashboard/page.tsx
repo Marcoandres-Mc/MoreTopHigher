@@ -4,9 +4,7 @@ import { useState } from "react";
 import ScoreCircle from "../../components/ScoreCircle";
 import ScoreCircleUniversity from "../../components/ScoreCircleUniversity";
 
-
 // Dentro del JSX
-
 
 export default function DashboardPage() {
   // ... los mismos datos de ejemplo (importancia, habitsHoy, shortcuts, puntajes, racha)
@@ -65,12 +63,14 @@ export default function DashboardPage() {
   ]);
 
   const puntajeHabitos = 100;
-  const puntajeUniversidad = 17.2;
+  const puntajeUniversidad = 17.26;
   const rachaActual = 2;
-  const porcentajeUniversidad = (puntajeUniversidad / 20) * 100;
+  const porcentajeUniversidad = 30;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-gray-100 ">
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://www.elconfidencial.com/deportes/formula-1/2017-09-27/f1-recordando-gp-malasia-2012-victoria-fernando-alonso_1450243/')" }}>
+      
       {/* Navbar (igual) */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,7 +95,7 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 py-4">
+      <main  className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4 py-4 ">
         {/* Grid de 3 columnas para los "cuadrados" */}
         <div className="flex gap-2">
           <div className="flex flex-col gap-2 w-[300]">
@@ -107,9 +107,6 @@ export default function DashboardPage() {
                     <h2 className="text-xs font-semibold text-gray-800 flex items-center gap-2">
                       <span className="text-2xl">⭐</span> Lista de importancia
                     </h2>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      Tareas prioritarias - Orden por urgencia
-                    </p>
                   </div>
                   <span className="text-xs bg-white/60 px-2 py-1 rounded-full text-amber-700">
                     Prioridad
@@ -192,9 +189,9 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex flex-col gap-4 w-[700]">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex  gap-6 justify-center">
               {/* Tarjeta de Hábitos */}
-              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/40 rounded-2xl shadow-md border border-emerald-200 p-6 transition-all hover:shadow-lg flex flex-col items-center">
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/40 rounded-2xl shadow-md border border-emerald-200 p-6 transition-all hover:shadow-lg flex flex-col items-center  w-[280px] h-[250px]">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-3xl">🏆</span>
                   <h3 className="text-xl font-bold text-gray-700">Hábitos</h3>
@@ -202,7 +199,11 @@ export default function DashboardPage() {
                     Racha 🔥
                   </span>
                 </div>
-                <ScoreCircle score={puntajeHabitos} size={140} label="Hábitos" />
+                <ScoreCircle
+                  score={puntajeHabitos}
+                  size={100}
+                  label="Hábitos"
+                />
 
                 <div className="mt-4 w-full">
                   <div className="flex justify-between text-sm mb-1">
@@ -226,7 +227,8 @@ export default function DashboardPage() {
               </div>
 
               {/* Tarjeta de Universidad */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-100/40 rounded-2xl shadow-md border border-blue-200 p-6 transition-all hover:shadow-lg flex flex-col items-center">
+
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100/40 rounded-2xl shadow-md border border-blue-200 p-6 transition-all hover:shadow-lg flex flex-col items-center w-[280px] h-[250px]">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-3xl">🎓</span>
                   <h3 className="text-xl font-bold text-gray-700">
@@ -236,18 +238,29 @@ export default function DashboardPage() {
                     Promedio
                   </span>
                 </div>
-                <ScoreCircleUniversity score={puntajeUniversidad} maxScore={20} size={140} />
+
+                {/* Círculo con la nota 0-20 */}
+                <ScoreCircleUniversity
+                  score={puntajeUniversidad}
+                  maxScore={20}
+                  size={100}
+                />
+
                 <div className="mt-4 w-full">
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-gray-600">Rendimiento académico</span>
+                    {/* Mostramos el porcentaje real */}
                     <span className="font-bold text-blue-700">
-                      {puntajeUniversidad}%
+                      {porcentajeUniversidad}%
                     </span>
                   </div>
+                  {/* Barra de porcentaje (0-100%) */}
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
                       className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full"
-                      style={{ width: `${puntajeUniversidad}%` }}
+                      style={{
+                        width: `${(porcentajeUniversidad / 100) * 30}%`,
+                      }}
                     />
                   </div>
                 </div>
@@ -257,12 +270,12 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Páginas horizontales (ocupa 2 columnas) */}
+            {/* Páginas secundarias - diseño en cuadrícula sin scroll */}
             <div className="md:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-2">
               <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="text-2xl">📌</span> Páginas secundarias
               </h2>
-              <div className="flex overflow-x-auto space-x-4 pb-3 scrollbar-thin">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {[
                   {
                     id: 1,
@@ -289,22 +302,37 @@ export default function DashboardPage() {
                     nombre: "DiagramaUML",
                     url: "https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa700001",
                   },
+                  {
+                    id: 6,
+                    nombre: "Google Drive",
+                    url: "https://drive.google.com",
+                  },
+                  {
+                    id: 7,
+                    nombre: "Classroom",
+                    url: "https://classroom.google.com",
+                  },
+                  { id: 8, nombre: "ChatGPT", url: "https://chat.openai.com" },
+                  { id: 9, nombre: "Figma", url: "https://figma.com" },
+                  {
+                    id: 10,
+                    nombre: "Stack Overflow",
+                    url: "https://stackoverflow.com",
+                  },
                 ].map((pag) => (
                   <div
                     key={pag.id}
-                    className="relative flex-shrink-0 w-30 bg-white rounded-xl p-3 text-center hover:shadow-md transition-all cursor-pointer border border-gray-200 group"
+                    className="relative bg-white rounded-xl p-3 text-center hover:shadow-md transition-all cursor-pointer border border-gray-200 group"
                     onClick={() => window.open(pag.url, "_blank")}
                   >
-                    {/* Botón eliminar (opcional) */}
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); /* Aquí puedes llamar a una función para eliminar */
+                        e.stopPropagation(); /* función eliminar */
                       }}
                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs opacity-0 group-hover:opacity-100 transition"
                     >
                       ✕
                     </button>
-                    {/* Ícono obtenido del favicon de la URL */}
                     <img
                       src={`https://www.google.com/s2/favicons?domain=${new URL(pag.url).hostname}&sz=64`}
                       alt={pag.nombre}
@@ -313,25 +341,12 @@ export default function DashboardPage() {
                         (e.target as HTMLImageElement).style.display = "none";
                       }}
                     />
-                    <p className="font-medium text-gray-800 text-sm truncate">
+                    <p className="font-medium text-gray-800 text-xs truncate">
                       {pag.nombre}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1 truncate">
-                      {new URL(pag.url).hostname}
                     </p>
                   </div>
                 ))}
               </div>
-            </div>
-            {/* Elemento extra (consejo) podría ir en un cuadrado adicional */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl border border-gray-200 p-2">
-              <h2 className="text-md font-semibold text-gray-800 mb-2 flex items-center gap-1">
-                📖 Consejo MTH
-              </h2>
-              <p className="text-sm text-gray-600">
-                Divide tus tareas importantes en bloques de 25 min (Pomodoro)
-                para mantener la concentración.
-              </p>
             </div>
           </div>
 
@@ -370,6 +385,8 @@ export default function DashboardPage() {
                 ))}
               </div>
             </div>
+
+
             {/* Hábitos de hoy (ocupa 2 columnas) */}
             <div className="md:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="px-2 py-2 border-b border-gray-100 bg-green-50/40">
@@ -415,6 +432,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }
