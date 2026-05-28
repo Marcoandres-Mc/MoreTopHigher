@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import ScoreCircle from "../../components/ScoreCircle";
+import ScoreCircleUniversity from "../../components/ScoreCircleUniversity";
 
 
 // Dentro del JSX
@@ -65,7 +66,8 @@ export default function DashboardPage() {
 
   const puntajeHabitos = 100;
   const puntajeUniversidad = 17.2;
-  const rachaActual = 5;
+  const rachaActual = 2;
+  const porcentajeUniversidad = (puntajeUniversidad / 20) * 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
