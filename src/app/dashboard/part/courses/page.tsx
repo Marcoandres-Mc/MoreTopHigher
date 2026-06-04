@@ -1,6 +1,7 @@
 // src/app/dashboard/courses/page.tsx
 "use client";
 import { useState } from "react";
+import Nav from "../../components/Nav";
 
 // Tipos de datos
 interface Grade {
@@ -186,7 +187,10 @@ export default function CoursesPage() {
   };
 
   return (
+    <>
+    <Nav />
     <div className="space-y-6 bg-gradient-to-br from-slate-50 to-gray-100 p-10">
+      
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
@@ -439,6 +443,7 @@ export default function CoursesPage() {
         />
       )}
     </div>
+    </>
   );
 }
 
