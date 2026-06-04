@@ -200,19 +200,7 @@ export default function MindsetPage() {
                 </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <FeatureCard
-                  icon="🧘"
-                  title="Meditación guiada"
-                  subtitle="5 minutos diarios"
-                  description="Reduce el estrés y mejora tu enfoque con sesiones breves de mindfulness."
-                  badge="Popular"
-                >
-                  <button className="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-200 transition">
-                    Comenzar
-                  </button>
-                </FeatureCard>
-
-                <FeatureCard
-                  image="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=250&fit=crop"
+                  image="https://cms-images.acc.indazn.com/di/library/DAZN_News/97/25/fernando-alonso-ferrari-f1_z0dtc736uawf1lfb1q3gh5r8v.jpg?t=-310499886&quality=85&w=684"
                   title="Pacto de grandeza"
                   subtitle="Despertarse temprano y con propósito"
                   description="Prometo dar lo mejor de mi hasta terminar el dia, sin importar lo que pase. Cada día es una nueva oportunidad para crecer."
@@ -222,11 +210,11 @@ export default function MindsetPage() {
                 </FeatureCard>
 
                 <FeatureCard
-                  icon="📖"
-                  title="Lectura semanal"
-                  subtitle="Capítulo 3: El poder del ahora"
-                  description="Lee un fragmento y reflexiona sobre cómo aplicarlo en tu vida."
-                  onClick={() => alert("Abrir lectura")}
+                  image="https://images.ecestaticos.com/zHKprwfvOxxwE6xnf9sqml4JKlE=/0x114:1997x1161/557x418/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fd32%2F9dc%2Fc7d%2Fd329dcc7df18c141c1dcbf7c0eeb451e.jpg"
+                  title="MarCode Time"
+                  subtitle="Modo de enfoque, disciplina y ejecución."
+                  description="Lo uso cuando necesito dejar de dudar, controlar la presión y darlo todo por el objetivo que tengo"
+                  url="./mindset/mentalMode"
                 >
                   <button className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition">
                     Marcar como leído
@@ -234,10 +222,10 @@ export default function MindsetPage() {
                 </FeatureCard>
 
                 <FeatureCard
-                  image="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=250&fit=crop"
-                  title="Respiración profunda"
-                  subtitle="Técnica 4-7-8"
-                  description="Inhala 4 seg, retén 7, exhala 8. Calma la ansiedad al instante."
+                  image="https://i.scdn.co/image/ab67616d0000b273296d05fd4b9e99e88f28eac1"
+                  title="Repeat it"
+                  subtitle="repetir afirmaciones, hábitos o estudios."
+                  description="Con un enfoque motivador que refuerza la constancia."
                   badge="Nuevo"
                 />
               </div>

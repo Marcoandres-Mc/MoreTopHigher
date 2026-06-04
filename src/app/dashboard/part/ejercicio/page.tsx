@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import ScoreCircle from "@/components/ScoreCircle";
+import Nav from "../../components/Nav";
 
 export default function ExercisePage() {
   // Métricas principales
@@ -103,6 +104,8 @@ export default function ExercisePage() {
   const nivelCalculado = Math.round((diasEntrenadosSemana / metaDiasSemana) * 100);
 
   return (
+    <>
+      <Nav />
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
         <span className="text-4xl">💪</span> Ejercicio físico
@@ -327,5 +330,6 @@ export default function ExercisePage() {
         </div>
       )}
     </div>
+    </>
   );
 }

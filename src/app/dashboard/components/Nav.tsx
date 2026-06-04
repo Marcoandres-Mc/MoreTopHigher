@@ -15,7 +15,7 @@ const Nav = () => {
         {
         name: "UPC",
         href: "/dashboard/part/courses",
-        icon: "💻",
+        icon: "📓",
         gradient: "from-blue-900/50 to-blue-800/30",
         border: "border-blue-700",
         },
@@ -35,32 +35,38 @@ const Nav = () => {
         border: "border-orange-700",
         },
         {
-        name: "Hábitos",
-        href: "/dashboard/part/habits",
-        icon: "✅",
-        gradient: "from-emerald-900/50 to-emerald-800/30",
-        border: "border-emerald-700",
-        },
-        
-        {
-        name: "Ejercicio",
-        href: "/dashboard/part/exercise",
-        icon: "💪",
-        gradient: "from-rose-900/50 to-rose-800/30",
-        border: "border-rose-700",
+        name: "Trabajo",
+        href: "/dashboard/part/trabajo",
+        icon: "💼",
+        gradient: "from-yellow-900/50 to-yellow-800/30",
+        border: "border-yellow-700",
         },
         {
-        name: "Configuración",
-        href: "/dashboard/settings",
-        icon: "⚙️",
-        gradient: "from-gray-800 to-gray-700",
-        border: "border-gray-700",
+          name: "Hablar",
+          href: "/dashboard/part/hablar",
+          icon: "🗣️",
+          gradient: "from-green-900/50 to-green-800/30",
+          border: "border-green-700",
         },
+        {
+          name: "Empresa",
+          href: "/dashboard/part/empresa",
+          icon: "🏢",
+          gradient: "from-purple-900/50 to-purple-800/30",
+          border: "border-purple-700",
+        },
+        {
+          name: "Ejercicio",
+          href: "/dashboard/part/ejercicio",
+          icon: "💪",
+          gradient: "from-red-900/50 to-red-800/30",
+          border: "border-red-700",
+        }
     ];
 
   return (
-    <nav className="bg-black/40 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50 shadow-lg top-0 mx-auto transition-all duration-500 max-w-5xl rounded-2xl bg-background/75 backdrop-blur-xl border border-border/40 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="bg-black/40 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50 shadow-lg top-0 mx-auto transition-all duration-500  rounded-2xl bg-background/75 backdrop-blur-xl border border-border/40 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)]">
+      <div className="max-w-7xl mx-auto px-4 ">
         <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo y nombre */}
           <div className="flex items-center">
@@ -122,7 +128,7 @@ const Nav = () => {
 
           {/* Menú para desktop */}
           <div className="hidden md:block ">
-            <div className="ml-10 flex items-baseline space-x-2">
+            <div className=" flex items-baseline space-x-2">
               {navSections.map((item) => {
                 const isActive = pathname === item.href;
                 return (
