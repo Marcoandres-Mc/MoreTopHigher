@@ -24,7 +24,7 @@ const PaginasSecundarias = () => {
   ]);
   return (
 
-            <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-700 p-4 m-2 shadow-xl">
+            <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-700 p-2 m-2 shadow-xl">
               <h2 className="text-lg font-semibold text-gray-200 mb-3 flex items-center gap-2">
                 <span className="text-2xl">📌</span> Páginas secundarias
               </h2>

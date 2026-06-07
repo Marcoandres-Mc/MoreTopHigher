@@ -21,7 +21,7 @@ interface Curso {
 
 export default function NotasPage() {
   // Datos de ejemplo iniciales (detallados por evaluación)
-  const [cursos, setCursos] = useState<Curso[]>([
+  const initialCursos: Curso[] = [
     {
       id: "1",
       nombre: "Matemática",
@@ -52,7 +52,13 @@ export default function NotasPage() {
         { id: "e9", nombre: "Examen final", porcentaje: 40, nota: 18 },
       ],
     },
-  ]);
+  ];
+
+  const [cursos, setCursos] = useState<Curso[]>(() => {
+    if (typeof window === "undefined") return initialCursos;
+    const stored = localStorage.getItem("notas_cursos_detalle");
+    return stored ? JSON.parse(stored) : initialCursos;
+  });
 
   // Estados para modales
   const [mostrarModalCurso, setMostrarModalCurso] = useState(false);
@@ -61,12 +67,6 @@ export default function NotasPage() {
   const [evalEditando, setEvalEditando] = useState<{ cursoId: string; eval: Evaluacion | null } | null>(null);
   const [nuevoCurso, setNuevoCurso] = useState({ nombre: "", creditos: 3 });
   const [nuevaEval, setNuevaEval] = useState({ nombre: "", porcentaje: 0, nota: 0 });
-
-  // Cargar datos guardados
-  useEffect(() => {
-    const stored = localStorage.getItem("notas_cursos_detalle");
-    if (stored) setCursos(JSON.parse(stored));
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("notas_cursos_detalle", JSON.stringify(cursos));

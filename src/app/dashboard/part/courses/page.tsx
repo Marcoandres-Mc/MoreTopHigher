@@ -2,6 +2,8 @@
 "use client";
 import { useState } from "react";
 import Nav from "../../components/Nav";
+import MaterialCursos from "./components/MaterialCursos";
+import NotaCadaCurso from "./components/NotaCadaCurso";
 
 // Tipos de datos
 interface Grade {
@@ -11,12 +13,19 @@ interface Grade {
   weight: number;
 }
 
+interface WeekResource {
+  id: number;
+  weekNumber: number;
+  resources: Resource[];
+}
+
 interface Course {
   id: number;
   name: string;
   credits: number;
   grades: Grade[];
   resources: Resource[];
+  weeks: WeekResource[];
 }
 
 interface Resource {
@@ -24,6 +33,11 @@ interface Resource {
   name: string;
   url: string;
   type: "pdf" | "video" | "link" | "doc";
+}
+
+interface CourseModalData {
+  name: string;
+  credits: number;
 }
 
 export default function CoursesPage() {
@@ -52,6 +66,7 @@ export default function CoursesPage() {
           type: "pdf",
         },
       ],
+      weeks: [],
     },
     {
       id: 2,
@@ -70,6 +85,7 @@ export default function CoursesPage() {
           type: "link",
         },
       ],
+      weeks: [],
     },
     {
       id: 3,
@@ -81,8 +97,19 @@ export default function CoursesPage() {
         { id: 8, name: "Final", score: 82, weight: 0.4 },
       ],
       resources: [],
+      weeks: [],
     },
   ]);
+
+  // Estado para controlar qué panel está abierto
+  const [openPanel, setOpenPanel] = useState<"materiales" | "notas" | null>(
+    "materiales",
+  );
+
+  // Función para alternar entre paneles
+  const togglePanel = (panel: "materiales" | "notas") => {
+    setOpenPanel(openPanel === panel ? null : panel);
+  };
 
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [showCourseModal, setShowCourseModal] = useState(false);
@@ -91,7 +118,89 @@ export default function CoursesPage() {
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [editingGrade, setEditingGrade] = useState<Grade | null>(null);
 
-  // Calcular promedio del curso (ponderado por pesos)
+  // ========== FUNCIONES PARA SEMANAS ==========
+  const addWeek = (courseId: number) => {
+    const course = courses.find((c) => c.id === courseId);
+    if (!course) return;
+    const newWeekId = Math.max(...course.weeks.map((w) => w.id), 0) + 1;
+    const newWeekNumber = course.weeks.length + 1;
+    const updatedWeeks = [
+      ...course.weeks,
+      { id: newWeekId, weekNumber: newWeekNumber, resources: [] },
+    ];
+    setCourses(
+      courses.map((c) =>
+        c.id === courseId ? { ...c, weeks: updatedWeeks } : c,
+      ),
+    );
+  };
+
+  const deleteWeek = (courseId: number, weekId: number) => {
+    setCourses(
+      courses.map((c) =>
+        c.id === courseId
+          ? { ...c, weeks: c.weeks.filter((w) => w.id !== weekId) }
+          : c,
+      ),
+    );
+  };
+
+  const addResourceToWeek = (
+    courseId: number,
+    weekId: number,
+    resource: Omit<Resource, "id">,
+  ) => {
+    const newId =
+      Math.max(
+        ...courses.flatMap((c) =>
+          c.weeks.flatMap((w) => w.resources.map((r) => r.id)),
+        ),
+        0,
+      ) + 1;
+    setCourses(
+      courses.map((c) =>
+        c.id === courseId
+          ? {
+              ...c,
+              weeks: c.weeks.map((w) =>
+                w.id === weekId
+                  ? {
+                      ...w,
+                      resources: [...w.resources, { ...resource, id: newId }],
+                    }
+                  : w,
+              ),
+            }
+          : c,
+      ),
+    );
+  };
+
+  const deleteResourceFromWeek = (
+    courseId: number,
+    weekId: number,
+    resourceId: number,
+  ) => {
+    setCourses(
+      courses.map((c) =>
+        c.id === courseId
+          ? {
+              ...c,
+              weeks: c.weeks.map((w) =>
+                w.id === weekId
+                  ? {
+                      ...w,
+                      resources: w.resources.filter((r) => r.id !== resourceId),
+                    }
+                  : w,
+              ),
+            }
+          : c,
+      ),
+    );
+  };
+
+  // ========== FUNCIONES PARA CURSOS Y NOTAS ==========
   const calculateCourseAverage = (grades: Grade[]): number => {
     if (grades.length === 0) return 0;
     let totalWeight = 0;
@@ -103,7 +212,6 @@ export default function CoursesPage() {
     return totalWeight > 0 ? weightedSum / totalWeight : 0;
   };
 
-  // Calcular promedio general ponderado por créditos
   const calculateOverallAverage = (): number => {
     let totalCredits = 0;
     let weightedSum = 0;
@@ -115,28 +223,24 @@ export default function CoursesPage() {
     return totalCredits > 0 ? weightedSum / totalCredits : 0;
   };
 
-  // Agregar nuevo curso
-  const addCourse = (
-    courseData: Omit<Course, "id" | "grades" | "resources">,
-  ) => {
+  const addCourse = (courseData: CourseModalData) => {
     const newId = Math.max(...courses.map((c) => c.id), 0) + 1;
     const newCourse: Course = {
       ...courseData,
       id: newId,
       grades: [],
       resources: [],
+      weeks: [],
     };
     setCourses([...courses, newCourse]);
   };
 
-  // Editar curso
   const updateCourse = (updatedCourse: Course) => {
     setCourses(
       courses.map((c) => (c.id === updatedCourse.id ? updatedCourse : c)),
     );
   };
 
-  // Eliminar curso
   const deleteCourse = (id: number) => {
     if (
       confirm("¿Eliminar este curso? Se perderán todas las notas y recursos.")
@@ -146,7 +250,6 @@ export default function CoursesPage() {
     }
   };
 
-  // Agregar nota a un curso
   const addGrade = (courseId: number, gradeData: Omit<Grade, "id">) => {
     const newId =
       Math.max(...courses.flatMap((c) => c.grades.map((g) => g.id)), 0) + 1;
@@ -159,7 +262,6 @@ export default function CoursesPage() {
     );
   };
 
-  // Editar nota
   const updateGrade = (courseId: number, updatedGrade: Grade) => {
     setCourses(
       courses.map((c) =>
@@ -175,7 +277,6 @@ export default function CoursesPage() {
     );
   };
 
-  // Eliminar nota
   const deleteGrade = (courseId: number, gradeId: number) => {
     if (confirm("¿Eliminar esta nota?")) {
       setCourses(
@@ -188,7 +289,6 @@ export default function CoursesPage() {
     }
   };
 
-  // Agregar recurso al curso
   const addResource = (
     courseId: number,
     resourceData: Omit<Resource, "id">,
@@ -207,7 +307,6 @@ export default function CoursesPage() {
     );
   };
 
-  // Eliminar recurso
   const deleteResource = (courseId: number, resourceId: number) => {
     setCourses(
       courses.map((c) =>
@@ -220,7 +319,6 @@ export default function CoursesPage() {
 
   const overallAverage = calculateOverallAverage();
 
-  // Iconos para tipos de recurso
   const getResourceIcon = (type: string) => {
     switch (type) {
       case "pdf":
@@ -253,44 +351,42 @@ export default function CoursesPage() {
             <span>+</span> Nuevo curso
           </button>
         </div>
+
         <div className="flex flex-row gap-8">
-          <div className="flex flex-col gap-2 w-1/4">
-            {/* --- Bloque 1: Logo y Datos Clave --- */}
-            <div className="w-full ">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 h-full flex flex-col items-center text-center">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/f/fc/UPC_logo_transparente.png"
-                  alt="Logo UPC"
-                  className="w-32 h-32 object-contain mb-4"
-                />
-                <h3 className="text-lg font-bold text-gray-800">
-                  Universidad Peruana de Ciencias Aplicadas
-                </h3>
-                <p className="text-xs text-gray-500 mt-1">
-                  Fundada en 1994 | Lima, Perú
-                </p>
-                <div className="w-full mt-4 pt-4 border-t border-gray-100">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Estudiantes</span>
-                    <span className="font-semibold text-gray-800">~72,000</span>
-                  </div>
-                  <div className="flex justify-between text-sm mt-2">
-                    <span className="text-gray-500">Carreras</span>
-                    <span className="font-semibold text-gray-800">
-                      58 programas
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm mt-2">
-                    <span className="text-gray-500">Acreditación</span>
-                    <span className="font-semibold text-green-600">
-                      WASC / SINEACE
-                    </span>
-                  </div>
+          {/* Columna izquierda (25%) */}
+          <div className="flex flex-col gap-4 w-1/4">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 flex flex-col items-center text-center">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/f/fc/UPC_logo_transparente.png"
+                alt="Logo UPC"
+                className="w-32 h-32 object-contain mb-4"
+              />
+              <h3 className="text-lg font-bold text-gray-800">
+                Universidad Peruana de Ciencias Aplicadas
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Fundada en 1994 | Lima, Perú
+              </p>
+              <div className="w-full mt-4 pt-4 border-t border-gray-100">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Estudiantes</span>
+                  <span className="font-semibold text-gray-800">~72,000</span>
+                </div>
+                <div className="flex justify-between text-sm mt-2">
+                  <span className="text-gray-500">Carreras</span>
+                  <span className="font-semibold text-gray-800">
+                    58 programas
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm mt-2">
+                  <span className="text-gray-500">Acreditación</span>
+                  <span className="font-semibold text-green-600">
+                    WASC / SINEACE
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Tarjeta de promedio general */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-6 text-white">
               <div className="flex justify-between items-center">
                 <div>
@@ -320,230 +416,159 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          {/* Grid de cursos */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-3/4">
-            {/* Lista de cursos */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Mis cursos
-              </h2>
-              {courses.map((course) => {
-                const avg = calculateCourseAverage(course.grades);
-                return (
-                  <div
-                    key={course.id}
-                    className={`bg-white rounded-2xl shadow-sm border p-5 cursor-pointer transition-all hover:shadow-md ${
-                      selectedCourse?.id === course.id
-                        ? "border-blue-500 ring-2 ring-blue-200"
-                        : "border-gray-200"
-                    }`}
-                    onClick={() => setSelectedCourse(course)}
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h3 className="font-bold text-lg text-gray-800">
-                          {course.name}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          {course.credits} créditos
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-blue-600">
-                          {avg.toFixed(1)}%
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {course.grades.length} nota
-                          {course.grades.length !== 1 ? "s" : ""}
-                        </p>
-                      </div>
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-800">
+              Mis notas de cada curso
+            </h2>
+            {courses.map((course) => {
+              const avg = calculateCourseAverage(course.grades);
+              return (
+                <div
+                  key={course.id}
+                  className={`bg-white rounded-2xl shadow-sm border p-5 cursor-pointer transition-all hover:shadow-md ${
+                    selectedCourse?.id === course.id
+                      ? "border-blue-500 ring-2 ring-blue-200"
+                      : "border-gray-200"
+                  }`}
+                  onClick={() => setSelectedCourse(course)}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-bold text-lg text-gray-800">
+                        {course.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {course.credits} créditos
+                      </p>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div
-                        className="bg-blue-600 h-1.5 rounded-full"
-                        style={{ width: `${avg}%` }}
-                      />
-                    </div>
-                    <div className="flex gap-2 mt-3">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingCourse(course);
-                          setShowCourseModal(true);
-                        }}
-                        className="text-xs text-gray-500 hover:text-blue-600"
-                      >
-                        ✏️ Editar
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteCourse(course.id);
-                        }}
-                        className="text-xs text-gray-500 hover:text-red-600"
-                      >
-                        🗑️ Eliminar
-                      </button>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-blue-600">
+                        {avg.toFixed(1)}%
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {course.grades.length} nota
+                        {course.grades.length !== 1 ? "s" : ""}
+                      </p>
                     </div>
                   </div>
-                );
-              })}
-              {courses.length === 0 && (
-                <div className="bg-gray-50 rounded-2xl p-8 text-center text-gray-500">
-                  No tienes cursos. ¡Agrega tu primer curso!
+                  <div className="w-full bg-gray-200 rounded-full h-1.5">
+                    <div
+                      className="bg-blue-600 h-1.5 rounded-full"
+                      style={{ width: `${avg}%` }}
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingCourse(course);
+                        setShowCourseModal(true);
+                      }}
+                      className="text-xs text-gray-500 hover:text-blue-600"
+                    >
+                      ✏️ Editar
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteCourse(course.id);
+                      }}
+                      className="text-xs text-gray-500 hover:text-red-600"
+                    >
+                      🗑️ Eliminar
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            {courses.length === 0 && (
+              <div className="bg-gray-50 rounded-2xl p-8 text-center text-gray-500">
+                No tienes cursos. ¡Agrega tu primer curso!
+              </div>
+            )}
+          </div>
+          <div className="w-full space-y-4">
+            {/* Panel de Materiales del curso (Recursos por semanas) */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => togglePanel("materiales")}
+                className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">📦</span>
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Materiales del curso
+                  </h2>
+                  <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                    Recursos por semanas
+                  </span>
+                </div>
+                <span className="text-gray-400 transition-transform duration-200">
+                  {openPanel === "materiales" ? "▲" : "▼"}
+                </span>
+              </button>
+
+              {openPanel === "materiales" && (
+                <div className="p-6 border-t border-gray-100">
+                  <MaterialCursos
+                    courses={courses}
+                    selectedCourse={selectedCourse}
+                    calculateCourseAverage={calculateCourseAverage}
+                    deleteCourse={deleteCourse}
+                    setShowCourseModal={setShowCourseModal}
+                    onAddWeek={addWeek}
+                    onDeleteWeek={deleteWeek}
+                    onAddResourceToWeek={addResourceToWeek}
+                    onDeleteResourceFromWeek={deleteResourceFromWeek}
+                  />
                 </div>
               )}
             </div>
 
-            {/* Detalle del curso seleccionado */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              {selectedCourse ? (
-                <>
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h2 className="text-xl font-bold text-gray-800">
-                        {selectedCourse.name}
-                      </h2>
-                      <p className="text-sm text-gray-500">
-                        {selectedCourse.credits} créditos
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-3xl font-bold text-blue-600">
-                        {calculateCourseAverage(selectedCourse.grades).toFixed(
-                          1,
-                        )}
-                        %
-                      </p>
-                      <p className="text-xs text-gray-400">promedio</p>
-                    </div>
-                  </div>
+            {/* Panel de Notas y promedio */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <button
+                onClick={() => togglePanel("notas")}
+                className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">📝</span>
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    Notas y promedio
+                  </h2>
+                  <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">
+                    Calificaciones
+                  </span>
+                </div>
+                <span className="text-gray-400 transition-transform duration-200">
+                  {openPanel === "notas" ? "▲" : "▼"}
+                </span>
+              </button>
 
-                  {/* Sección de notas */}
-                  <div className="mb-6">
-                    <div className="flex justify-between items-center mb-3">
-                      <h3 className="font-semibold text-gray-700 flex items-center gap-2">
-                        <span>📝</span> Notas
-                      </h3>
-                      <button
-                        onClick={() => {
-                          setEditingGrade(null);
-                          setShowGradeModal(true);
-                        }}
-                        className="text-sm text-blue-600 hover:text-blue-700"
-                      >
-                        + Agregar nota
-                      </button>
-                    </div>
-                    {selectedCourse.grades.length > 0 ? (
-                      <div className="space-y-2">
-                        {selectedCourse.grades.map((grade) => (
-                          <div
-                            key={grade.id}
-                            className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
-                          >
-                            <div>
-                              <p className="font-medium text-gray-800">
-                                {grade.name}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                Peso: {(grade.weight * 100).toFixed(0)}%
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="font-bold text-lg">
-                                {grade.score}%
-                              </span>
-                              <button
-                                onClick={() => {
-                                  setEditingGrade(grade);
-                                  setShowGradeModal(true);
-                                }}
-                                className="text-gray-400 hover:text-blue-600"
-                              >
-                                ✏️
-                              </button>
-                              <button
-                                onClick={() =>
-                                  deleteGrade(selectedCourse.id, grade.id)
-                                }
-                                className="text-gray-400 hover:text-red-600"
-                              >
-                                🗑️
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-gray-400 text-sm">
-                        No hay notas registradas
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Sección de recursos */}
-                  <div>
-                    <div className="flex justify-between items-center mb-3">
-                      <h3 className="font-semibold text-gray-700 flex items-center gap-2">
-                        <span>🔗</span> Recursos del curso
-                      </h3>
-                      <button
-                        onClick={() => setShowResourceModal(true)}
-                        className="text-sm text-blue-600 hover:text-blue-700"
-                      >
-                        + Agregar recurso
-                      </button>
-                    </div>
-                    {selectedCourse.resources.length > 0 ? (
-                      <div className="space-y-2">
-                        {selectedCourse.resources.map((resource) => (
-                          <div
-                            key={resource.id}
-                            className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
-                          >
-                            <div className="flex items-center gap-2 flex-1">
-                              <span className="text-lg">
-                                {getResourceIcon(resource.type)}
-                              </span>
-                              <a
-                                href={resource.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm text-blue-600 hover:underline flex-1"
-                              >
-                                {resource.name}
-                              </a>
-                            </div>
-                            <button
-                              onClick={() =>
-                                deleteResource(selectedCourse.id, resource.id)
-                              }
-                              className="text-gray-400 hover:text-red-600"
-                            >
-                              🗑️
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-gray-400 text-sm">
-                        No hay recursos agregados
-                      </p>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-                  <span className="text-5xl mb-3">📖</span>
-                  <p>Selecciona un curso para ver sus detalles</p>
+              {openPanel === "notas" && (
+                <div className="p-6 border-t border-gray-100">
+                  <NotaCadaCurso
+                    courses={courses}
+                    selectedCourse={selectedCourse}
+                    setSelectedCourse={setSelectedCourse}
+                    calculateCourseAverage={calculateCourseAverage}
+                    deleteCourse={deleteCourse}
+                    setEditingCourse={setEditingCourse}
+                    setShowCourseModal={setShowCourseModal}
+                    setEditingGrade={setEditingGrade}
+                    setShowGradeModal={setShowGradeModal}
+                    deleteGrade={deleteGrade}
+                    setShowResourceModal={setShowResourceModal}
+                    deleteResource={deleteResource}
+                    getResourceIcon={getResourceIcon}
+                  />
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Modales (simplificados para no alargar, pero funcionales) */}
+        {/* Modales */}
         {showCourseModal && (
           <CourseModal
             course={editingCourse}
@@ -554,6 +579,7 @@ export default function CoursesPage() {
                   id: editingCourse.id,
                   grades: editingCourse.grades,
                   resources: editingCourse.resources,
+                  weeks: editingCourse.weeks,
                 });
               } else {
                 addCourse(courseData);
@@ -605,11 +631,6 @@ export default function CoursesPage() {
 }
 
 // ==================== MODALES ====================
-
-interface CourseModalData {
-  name: string;
-  credits: number;
-}
 
 function CourseModal({
   course,
@@ -770,9 +791,6 @@ function ResourceModal({
     e.preventDefault();
     if (!name.trim() || !url.trim()) return;
     onSave({ name, url, type });
-    setName("");
-    setUrl("");
-    setType("link");
   };
 
   return (
@@ -798,9 +816,7 @@ function ResourceModal({
           />
           <select
             value={type}
-            onChange={(e) =>
-              setType(e.target.value as "pdf" | "video" | "link" | "doc")
-            }
+            onChange={(e) => setType(e.target.value as any)}
             className="w-full border rounded-lg p-2 mb-4"
           >
             <option value="link">🔗 Enlace</option>

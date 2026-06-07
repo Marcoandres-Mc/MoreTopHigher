@@ -136,6 +136,13 @@ export default function DashboardPage() {
       url: "https://marcoandres-mc.github.io/DevFolio/",
       icono: "🚀",
     },
+    {
+      id: 4,
+      nombre: "Actualizar conocimientos",
+      descripcion: "Pagina de tecnologias nuevas",
+      url: "https://www.thoughtworks.com/es-es/radar",
+      icono: "📚",
+    }
   ];
 
   const proyectosUniversidad = [
@@ -170,13 +177,13 @@ export default function DashboardPage() {
       <Nav />
 
       <main className="max-w-7xl mx-auto py-6 px-4 gap-6">
-        <div className="flex flex-row w-full gap-6">
+        <div className="w-[75%] flex flex-row gap-6">
           {/* COLUMNA IZQUIERDA: Lista de importancia + Acceso directo */}
-          <div className="w-3/4">
+          <div className="flex flex-col gap-6">
             {" "}
             {/* Quitamos flex-1 para que respete el 75% */}
             <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-700 p-5 shadow-xl">
-              <div className="w-3/4 space-y-6">
+              <div className=" space-y-6">
                 {/* Proyectos personales */}
                 <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-700 p-5 shadow-xl">
                   <h2 className="text-xl font-semibold text-gray-100 flex items-center gap-2 mb-3">
@@ -282,12 +289,13 @@ export default function DashboardPage() {
 
           {/* COLUMNA DERECHA: Estadísticas + Páginas secundarias */}     
             
-            <Container />
+            
 
           
 
         </div>
       </main>
+      <Container />
     </div>
   );
 }

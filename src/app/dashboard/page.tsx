@@ -120,7 +120,18 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex justify-center flex-col min-h-screen w-full bg-gradient-to-br from-slate-50 to-gray-100">
+<div className="relative min-h-screen w-full">
+  {/* Imagen de fondo */}
+  <div 
+    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+    style={{ 
+      backgroundImage: `url('https://drscdn.500px.org/photo/24832457/q%3D90_m%3D2048/v2?sig=357cece2375bf51d2ba72d6cce1b951faeb067dbcd7add4cd5bd438449772cd9')`
+    }}
+  />
+  
+  
+  {/* Contenido - asegúrate de que tenga posición relativa */}
+  <div className="relative z-10 flex justify-center flex-col min-h-screen w-full">
         {/* Navbar (igual) */}
         <Nav/>
 
@@ -280,9 +291,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Páginas secundarias - tarjeta con grid responsivo */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-5 transition-all hover:shadow-xl">
-        <h2 className="text-lg font-bold text-gray-800 mb-5 flex items-center gap-2">
-          <span className="text-2xl">📌</span> Páginas secundarias
+      <div className="  rounded-2xl  border border-white/50 p-5 transition-all hover:shadow-xl">
+        <h2 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
+          <span className="text-2xl ">📌</span> Páginas secundarias
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {[
@@ -386,5 +397,7 @@ export default function DashboardPage() {
   </div>
 </main>
       </div>
+      </div>
+
   );
 }

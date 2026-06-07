@@ -13,10 +13,10 @@ const Estadistica = () => {
       const porcentajeUniversidad = 30; // si aún quieres mostrar algo de uni, lo dejamos como opcional
     
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-9 gap-6">
+    <div className="flex flex-col gap-6">
           <div className="lg:col-span-6 space-y-6">
             {/* Tarjetas de métricas (Racha de código y LeetCode) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="flex flex-col gap-2">
               {/* Racha de código - estilo "Hábitos" */}
               <div className="bg-gradient-to-br from-cyan-900/50 to-blue-900/30 rounded-2xl border border-cyan-700 p-5 flex flex-col items-center shadow-xl">
                 <div className="flex items-center gap-2 mb-2">

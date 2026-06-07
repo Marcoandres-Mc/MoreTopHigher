@@ -2,7 +2,7 @@
 
 export default function page(){
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50/30 to-yellow-50">
       {/* Header simple */}
       <header className="container mx-auto px-6 py-6 flex justify-between items-center">
         <div className="text-2xl font-bold text-blue-800">MTH</div>

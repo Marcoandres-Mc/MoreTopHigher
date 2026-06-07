@@ -2,6 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Nav from "@/app/dashboard/components/Nav";
+import EmailCards from "./components/EmailCards";
 
 interface Postulacion {
   id: number;
@@ -12,14 +13,45 @@ interface Postulacion {
   url: string;
 }
 
+interface Canal {
+  id: number;
+  nombre: string;
+  url: string;
+  revisado: boolean;
+}
+
+interface Correo {
+  id: number;
+  nombre: string;
+  url: string;
+  revisado: boolean;
+}
+
 export default function TrabajoPage() {
-  // --- Canales de búsqueda (plataformas y correos) ---
-  const [canales, setCanales] = useState([
+  // --- Canales de búsqueda (plataformas y correos) - CORREGIDO (sin duplicados) ---
+  const [canales, setCanales] = useState<Canal[]>([
     { id: 1, nombre: "LinkedIn", url: "https://www.linkedin.com/jobs/", revisado: false },
     { id: 2, nombre: "Computrabajo", url: "https://www.computrabajo.com.pe/", revisado: false },
     { id: 3, nombre: "GetOnBoard", url: "https://www.getonboard.com/", revisado: false },
-    { id: 4, nombre: "Correo UPC (FCE)", url: "https://outlook.office.com/mail/", revisado: false },
-    { id: 5, nombre: "Correo Personal", url: "https://mail.google.com/", revisado: false },
+    { id: 4, nombre: "Bumeran", url: "https://www.bumeran.com.pe/", revisado: false },
+    { id: 5, nombre: "UPC Bolsa de trabajo", url: "https://upc-csm.symplicity.com/students/app/home", revisado: false },
+    { id: 6, nombre: "Noticias UPC", url: "https://bolsadetrabajo.upc.edu.pe/noticias/", revisado: false },
+  ]);
+
+  // --- Correos (nuevo array separado) ---
+  const [correos, setCorreos] = useState<Correo[]>([
+    { 
+      id: 1, 
+      nombre: "Correo UPC (FCE)", 
+      url: "https://outlook.office.com/mail/inbox/id/AAQkADRiNjA4OGE5LWJlYjYtNDM0YS05MTA0LTQ5NDRiY2ZlMTEwMQAQAMK6ZXs%2BIiBDvZcoXfRwDFU%3D", 
+      revisado: false 
+    },
+    { 
+      id: 2, 
+      nombre: "Correo Personal", 
+      url: "https://mail.google.com/", 
+      revisado: false 
+    },
   ]);
 
   // --- Postulaciones registradas ---
@@ -68,23 +100,33 @@ export default function TrabajoPage() {
     const saved = localStorage.getItem("trabajo_progreso");
     if (saved) {
       const data = JSON.parse(saved);
-      setCanales(data.canales || canales);
-      setPostulaciones(data.postulaciones || postulaciones);
-      setTareas(data.tareas || tareas);
-      setCorreosPendientes(data.correosPendientes || correosPendientes);
+      // Defer state updates to avoid synchronous setState calls inside the effect
+      setTimeout(() => {
+        setCanales(data.canales);
+        setCorreos(data.correos || correos);
+        setPostulaciones(data.postulaciones || postulaciones);
+        setTareas(data.tareas || tareas);
+        setCorreosPendientes(data.correosPendientes || correosPendientes);
+      }, 0);
     }
   }, []);
 
   useEffect(() => {
     localStorage.setItem(
       "trabajo_progreso",
-      JSON.stringify({ canales, postulaciones, tareas, correosPendientes })
+      JSON.stringify({ canales, correos, postulaciones, tareas, correosPendientes })
     );
-  }, [canales, postulaciones, tareas, correosPendientes]);
+  }, [canales, correos, postulaciones, tareas, correosPendientes]);
 
   // --- Funciones ---
   const toggleCanal = (id: number) => {
     setCanales(prev =>
+      prev.map(c => (c.id === id ? { ...c, revisado: !c.revisado } : c))
+    );
+  };
+
+  const toggleCorreo = (id: number) => {
+    setCorreos(prev =>
       prev.map(c => (c.id === id ? { ...c, revisado: !c.revisado } : c))
     );
   };
@@ -119,6 +161,8 @@ export default function TrabajoPage() {
   // Contadores
   const canalesRevisados = canales.filter(c => c.revisado).length;
   const totalCanales = canales.length;
+  const correosRevisados = correos.filter(c => c.revisado).length;
+  const totalCorreos = correos.length;
   const tareasCompletadas = tareas.filter(t => t.completado).length;
   const totalTareas = tareas.length;
 
@@ -141,6 +185,10 @@ export default function TrabajoPage() {
                 <div className="text-xs text-gray-500">Canales revisados</div>
               </div>
               <div className="text-center border-l border-gray-200 pl-4">
+                <div className="text-2xl font-bold text-purple-600">{correosRevisados}/{totalCorreos}</div>
+                <div className="text-xs text-gray-500">Correos revisados</div>
+              </div>
+              <div className="text-center border-l border-gray-200 pl-4">
                 <div className="text-2xl font-bold text-green-600">{postulaciones.length}</div>
                 <div className="text-xs text-gray-500">Postulaciones</div>
               </div>
@@ -159,10 +207,10 @@ export default function TrabajoPage() {
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
                   <span className="text-2xl">🔍</span> Canales a revisar hoy
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-80 overflow-y-auto">
                   {canales.map(canal => (
                     <div key={canal.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-xl transition">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-1">
                         <input
                           type="checkbox"
                           checked={canal.revisado}
@@ -192,6 +240,8 @@ export default function TrabajoPage() {
                   )}
                 </div>
               </div>
+
+              
 
               {/* Tarjeta: Agregar nueva postulación */}
               <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5">
@@ -276,7 +326,7 @@ export default function TrabajoPage() {
                             <td className="py-2 text-gray-500">{p.fecha}</td>
                             <td className="py-2">
                               {p.url && (
-                                <a href={p.url} target="_blank" className="text-blue-600 hover:underline text-xs">Ver</a>
+                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-xs">Ver</a>
                               )}
                             </td>
                           </tr>
@@ -288,8 +338,58 @@ export default function TrabajoPage() {
               </div>
             </div>
 
-            {/* Columna derecha: tareas, correos y tips */}
+            {/* Columna derecha: tareas, correos pendientes y tips */}
             <div className="space-y-6">
+              {/* Tarjeta: Correos importantes */}
+              <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5">
+                <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
+                  <span className="text-2xl">📧</span> Correos importantes
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {correos.map(correo => (
+                    <div
+                      key={correo.id}
+                      className={`p-4 rounded-xl cursor-pointer transition-all hover:shadow-md ${
+                        correo.revisado 
+                          ? "bg-gray-100 border border-gray-200" 
+                          : "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200"
+                      }`}
+                      onClick={() => window.open(correo.url, "_blank")}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">
+                            {correo.nombre.includes("UPC") ? "🏫" : "👤"}
+                          </span>
+                          <h3 className="font-semibold text-gray-800 text-sm">{correo.nombre}</h3>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleCorreo(correo.id);
+                          }}
+                          className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                            correo.revisado
+                              ? "bg-green-500 text-white"
+                              : "bg-gray-300 text-gray-500 hover:bg-green-400 hover:text-white"
+                          }`}
+                        >
+                          {correo.revisado ? "✓" : "○"}
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">
+                        {new URL(correo.url).hostname}
+                      </p>
+                      {correo.revisado && (
+                        <span className="text-xs text-green-600 mt-2 inline-block">Revisado</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+
+
               {/* Checklist de tareas diarias */}
               <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5">
                 <h3 className="font-semibold text-gray-800 flex items-center gap-2 mb-3">
@@ -302,7 +402,7 @@ export default function TrabajoPage() {
                         type="checkbox"
                         checked={tarea.completado}
                         onChange={() => toggleTarea(tarea.id)}
-                        className="w-4 h-4 text-blue-600"
+                        className="w-4 h-4 text-blue-600 rounded"
                       />
                       <span className={`text-gray-700 text-sm ${tarea.completado ? "line-through text-gray-400" : ""}`}>
                         {tarea.texto}
@@ -318,15 +418,15 @@ export default function TrabajoPage() {
               {/* Bandeja de correos pendientes (simulada) */}
               <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5">
                 <h3 className="font-semibold text-gray-800 flex items-center gap-2 mb-3">
-                  <span>📧</span> Correos por revisar
+                  <span>📬</span> Correos por revisar
                 </h3>
                 {correosPendientes.filter(c => !c.leido).length === 0 ? (
-                  <p className="text-gray-400 text-sm">✅ No hay correos nuevos pendientes.</p>
+                  <p className="text-gray-400 text-sm">✅ Bandeja limpia - No hay correos nuevos.</p>
                 ) : (
                   <div className="space-y-2">
                     {correosPendientes.map(correo => !correo.leido && (
                       <div key={correo.id} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg">
-                        <span className="text-sm text-gray-700 truncate">{correo.asunto}</span>
+                        <span className="text-sm text-gray-700 truncate flex-1">{correo.asunto}</span>
                         <button
                           onClick={() => marcarCorreoLeido(correo.id)}
                           className="text-xs bg-white border border-gray-300 px-2 py-1 rounded-full hover:bg-gray-100"
