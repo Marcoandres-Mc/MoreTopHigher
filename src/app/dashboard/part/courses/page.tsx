@@ -32,7 +32,7 @@ interface Resource {
   id: number;
   name: string;
   url: string;
-  type: "pdf" | "video" | "link" | "doc";
+  type: string;
 }
 
 interface CourseModalData {
@@ -515,6 +515,8 @@ export default function CoursesPage() {
                     selectedCourse={selectedCourse}
                     calculateCourseAverage={calculateCourseAverage}
                     deleteCourse={deleteCourse}
+                    setSelectedCourse={setSelectedCourse}
+                    setEditingCourse={setEditingCourse}
                     setShowCourseModal={setShowCourseModal}
                     onAddWeek={addWeek}
                     onDeleteWeek={deleteWeek}
@@ -816,7 +818,9 @@ function ResourceModal({
           />
           <select
             value={type}
-            onChange={(e) => setType(e.target.value as any)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setType(e.target.value as "pdf" | "video" | "link" | "doc")
+            }
             className="w-full border rounded-lg p-2 mb-4"
           >
             <option value="link">🔗 Enlace</option>
