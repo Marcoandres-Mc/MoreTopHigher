@@ -61,6 +61,13 @@ const Nav = () => {
           icon: "💪",
           gradient: "from-red-900/50 to-red-800/30",
           border: "border-red-700",
+        },
+        {
+          name: "Habitos",
+          href: "/dashboard/part/habitos",
+          icon: "💪",
+          gradient: "from-red-900/50 to-red-800/30",
+          border: "border-red-700",
         }
     ];
 

@@ -2,6 +2,7 @@
 import React from 'react';
 import CourseAccordion from './CourseAccordion';
 
+
 interface Resource {
   id: number;
   name: string;
