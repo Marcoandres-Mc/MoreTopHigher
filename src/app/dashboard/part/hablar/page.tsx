@@ -1,14 +1,24 @@
 // src/app/dashboard/influencia/page.tsx
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Nav from "@/app/dashboard/components/Nav";
 import ScoreCircle from "@/components/ScoreCircle";
+import router from "next/router";
 
 export default function InfluenciaPage() {
   // Estado para el nivel de influencia (simulado)
   const [nivelInfluencia, setNivelInfluencia] = useState(68);
   const [frasePractica, setFrasePractica] = useState("");
-  const [frasesGuardadas, setFrasesGuardadas] = useState<string[]>([]);
+  const [frasesGuardadas, setFrasesGuardadas] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const stored = localStorage.getItem("influencia_frases");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
   const [checklist, setChecklist] = useState([
     { id: 1, texto: "Mantener contacto visual", completado: false },
     { id: 2, texto: "Usar pausas efectivas", completado: false },
@@ -29,12 +39,6 @@ export default function InfluenciaPage() {
     "Prueba social: menciona casos de éxito similares.",
     "Autoridad: respalda tus argumentos con datos o referencias.",
   ];
-
-  // Cargar frases guardadas
-  useEffect(() => {
-    const stored = localStorage.getItem("influencia_frases");
-    if (stored) setFrasesGuardadas(JSON.parse(stored));
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("influencia_frases", JSON.stringify(frasesGuardadas));
@@ -170,10 +174,10 @@ export default function InfluenciaPage() {
               <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 p-5">
                 <h3 className="text-white font-semibold mb-2">📖 Storytelling en 3 pasos</h3>
                 <p className="text-white/70 text-sm mb-3">
-                  Para cautivar, cuenta una historia: 1) Un personaje, 2) Un problema, 3) Una solución.
+                  Para cautivar, cuenta una historia: 1 Un personaje, 2 Un problema, 3 Una solución.
                 </p>
                 <div className="bg-white/5 rounded-xl p-3 text-white text-sm">
-                  <span className="text-purple-300">Ejemplo:</span> "Cuando empecé a hablar en público, temblaba. Pero un día decidí practicar 5 minutos al día. Hoy hablo con seguridad."
+                  <span className="text-purple-300">Ejemplo:</span> Cuando empecé a hablar en público, temblaba. Pero un día decidí practicar 5 minutos al día. Hoy hablo con seguridad.
                 </div>
               </div>
             </div>
@@ -231,7 +235,7 @@ export default function InfluenciaPage() {
               <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl border border-amber-400/30 p-5 text-center">
                 <span className="text-3xl block mb-2">🗣️</span>
                 <p className="text-white italic">
-                  "La gente olvidará lo que dijiste, olvidará lo que hiciste, pero nunca olvidará cómo los hiciste sentir."
+                  La gente olvidará lo que dijiste, olvidará lo que hiciste, pero nunca olvidará cómo los hiciste sentir.
                 </p>
                 <p className="text-white/50 text-xs mt-2">— Maya Angelou</p>
               </div>

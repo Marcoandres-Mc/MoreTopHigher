@@ -1,6 +1,6 @@
 // src/app/dashboard/english/page.tsx
 "use client";
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import ScoreCircle from "@/components/ScoreCircle";
 import Nav from "../../components/Nav";
 
@@ -11,6 +11,84 @@ interface ResourceLink {
   url: string;
   categoria: string;
 }
+
+const agregarLink = (
+  links: ResourceLink[],
+  setLinks: Dispatch<SetStateAction<ResourceLink[]>>
+) => {
+  const nombre = prompt("Nombre del recurso:", "");
+  if (!nombre) return;
+  const url = prompt("URL completa (incluye https://):", "https://");
+  if (!url) return;
+  const categoria = prompt("Categoría (app, video, podcast, web, herramienta, etc.):", "recurso");
+  const nuevoId = Math.max(...links.map((l) => l.id), 0) + 1;
+  setLinks([...links, { id: nuevoId, nombre, url, categoria: categoria || "recurso" }]);
+};
+
+const eliminarLink = (
+  id: number,
+  links: ResourceLink[],
+  setLinks: Dispatch<SetStateAction<ResourceLink[]>>
+) => {
+  if (confirm("¿Eliminar este enlace?")) {
+    setLinks(links.filter((l) => l.id !== id));
+  }
+};
+
+const ResourceSection = ({
+  links,
+  setLinks,
+  title,
+}: {
+  links: ResourceLink[];
+  setLinks: Dispatch<SetStateAction<ResourceLink[]>>;
+  title: string;
+}) => (
+  <div className="mt-4 pt-3 border-t border-gray-200">
+    <div className="flex justify-between items-center mb-2">
+      <span className="text-xs font-medium text-gray-500">{title}</span>
+      <button
+        onClick={() => agregarLink(links, setLinks)}
+        className="text-xs text-blue-500 hover:text-blue-700"
+      >
+        + Agregar recurso
+      </button>
+    </div>
+    <div className="space-y-1 max-h-32 overflow-y-auto">
+      {links.length === 0 ? (
+        <p className="text-xs text-gray-400">No hay recursos</p>
+      ) : (
+        links.map((link) => (
+          <div key={link.id} className="group flex items-center justify-between p-1 rounded hover:bg-gray-100">
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 flex-1"
+            >
+              <img
+                src={`https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=16`}
+                alt={link.nombre}
+                className="w-4 h-4 rounded"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+              <span className="text-xs text-blue-600 hover:underline truncate max-w-[120px]">
+                {link.nombre}
+              </span>
+              <span className="text-[10px] text-gray-400">{link.categoria}</span>
+            </a>
+            <button
+              onClick={() => eliminarLink(link.id, links, setLinks)}
+              className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition text-xs"
+            >
+              ✕
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+  </div>
+);
 
 export default function EnglishPage() {
   // Datos generales
@@ -68,86 +146,6 @@ export default function EnglishPage() {
     { id: 2, nombre: "BBC Learning English", url: "https://www.bbc.co.uk/learningenglish", categoria: "curso" },
     { id: 3, nombre: "Cambridge English", url: "https://www.cambridgeenglish.org", categoria: "examen" },
   ]);
-
-  // ========== FUNCIONES GENÉRICAS PARA MANEJAR LINKS ==========
-  const agregarLink = (
-    links: ResourceLink[],
-    setLinks: React.Dispatch<React.SetStateAction<ResourceLink[]>>
-  ) => {
-    const nombre = prompt("Nombre del recurso:", "");
-    if (!nombre) return;
-    const url = prompt("URL completa (incluye https://):", "https://");
-    if (!url) return;
-    const categoria = prompt("Categoría (app, video, podcast, web, herramienta, etc.):", "recurso");
-    const nuevoId = Math.max(...links.map((l) => l.id), 0) + 1;
-    setLinks([...links, { id: nuevoId, nombre, url, categoria: categoria || "recurso" }]);
-  };
-
-  const eliminarLink = (
-    id: number,
-    links: ResourceLink[],
-    setLinks: React.Dispatch<React.SetStateAction<ResourceLink[]>>
-  ) => {
-    if (confirm("¿Eliminar este enlace?")) {
-      setLinks(links.filter((l) => l.id !== id));
-    }
-  };
-
-  // Función para renderizar la sección de recursos dentro de cada tarjeta
-  const ResourceSection = ({ 
-    links, 
-    setLinks, 
-    title 
-  }: { 
-    links: ResourceLink[]; 
-    setLinks: React.Dispatch<React.SetStateAction<ResourceLink[]>>;
-    title: string;
-  }) => (
-    <div className="mt-4 pt-3 border-t border-gray-200">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-xs font-medium text-gray-500">{title}</span>
-        <button
-          onClick={() => agregarLink(links, setLinks)}
-          className="text-xs text-blue-500 hover:text-blue-700"
-        >
-          + Agregar recurso
-        </button>
-      </div>
-      <div className="space-y-1 max-h-32 overflow-y-auto">
-        {links.length === 0 ? (
-          <p className="text-xs text-gray-400">No hay recursos</p>
-        ) : (
-          links.map((link) => (
-            <div key={link.id} className="group flex items-center justify-between p-1 rounded hover:bg-gray-100">
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 flex-1"
-              >
-                <img
-                  src={`https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=16`}
-                  alt={link.nombre}
-                  className="w-4 h-4 rounded"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                />
-                <span className="text-xs text-blue-600 hover:underline truncate max-w-[120px]">
-                  {link.nombre}
-                </span>
-                <span className="text-[10px] text-gray-400">{link.categoria}</span>
-              </a>
-              <button
-                onClick={() => eliminarLink(link.id, links, setLinks)}
-                className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition text-xs"
-              >
-                ✕
-              </button>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
 
   // Calcular porcentajes
   const progresoMeta = Math.min(100, (horasEstudiadas / metaSemanal) * 100);

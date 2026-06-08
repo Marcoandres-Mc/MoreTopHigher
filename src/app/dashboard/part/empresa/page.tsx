@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import Nav from "@/app/dashboard/components/Nav";
 
@@ -24,53 +24,68 @@ interface Lead {
 export default function EmpresaPage() {
   const router = useRouter();
 
-  // Datos de ejemplo
-  const [proyectos, setProyectos] = useState<Proyecto[]>([
-    {
-      id: "1",
-      nombre: "App Móvil Cliente A",
-      cliente: "TechMovil S.A.",
-      progreso: 75,
-      fechaEntrega: "2025-06-15",
-      estado: "En desarrollo",
-    },
-    {
-      id: "2",
-      nombre: "Dashboard Analítica",
-      cliente: "DataCorp",
-      progreso: 40,
-      fechaEntrega: "2025-07-01",
-      estado: "En desarrollo",
-    },
-    {
-      id: "3",
-      nombre: "Sistema de Ventas",
-      cliente: "Retail Plus",
-      progreso: 100,
-      fechaEntrega: "2025-05-20",
-      estado: "Completado",
-    },
-  ]);
+  // Datos de ejemplo o cargados desde localStorage
+  const getInitialProyectos = (): Proyecto[] => {
+    if (typeof window !== "undefined") {
+      const storedProyectos = localStorage.getItem("empresa_proyectos");
+      if (storedProyectos) return JSON.parse(storedProyectos);
+    }
+    return [
+      {
+        id: "1",
+        nombre: "App Móvil Cliente A",
+        cliente: "TechMovil S.A.",
+        progreso: 75,
+        fechaEntrega: "2025-06-15",
+        estado: "En desarrollo",
+      },
+      {
+        id: "2",
+        nombre: "Dashboard Analítica",
+        cliente: "DataCorp",
+        progreso: 40,
+        fechaEntrega: "2025-07-01",
+        estado: "En desarrollo",
+      },
+      {
+        id: "3",
+        nombre: "Sistema de Ventas",
+        cliente: "Retail Plus",
+        progreso: 100,
+        fechaEntrega: "2025-05-20",
+        estado: "Completado",
+      },
+    ];
+  };
 
-  const [leads, setLeads] = useState<Lead[]>([
-    {
-      id: "1",
-      empresa: "Fintech Start",
-      contacto: "Carlos López",
-      email: "carlos@fintechstart.com",
-      etapa: "Negociación",
-    },
-    {
-      id: "2",
-      empresa: "EduOnline",
-      contacto: "María García",
-      email: "maria@eduonline.com",
-      etapa: "Contactado",
-    },
-  ]);
+  const getInitialLeads = (): Lead[] => {
+    if (typeof window !== "undefined") {
+      const storedLeads = localStorage.getItem("empresa_leads");
+      if (storedLeads) return JSON.parse(storedLeads);
+    }
+    return [
+      {
+        id: "1",
+        empresa: "Fintech Start",
+        contacto: "Carlos López",
+        email: "carlos@fintechstart.com",
+        etapa: "Negociación",
+      },
+      {
+        id: "2",
+        empresa: "EduOnline",
+        contacto: "María García",
+        email: "maria@eduonline.com",
+        etapa: "Contactado",
+      },
+    ];
+  };
+
+  const [proyectos, setProyectos] = useState<Proyecto[]>(getInitialProyectos);
+  const [leads, setLeads] = useState<Lead[]>(getInitialLeads);
 
   const [mostrarModalProyecto, setMostrarModalProyecto] = useState(false);
-  const [nuevoProyecto, setNuevoProyecto] = useState<Partial<Proyecto>>({
+  const [nuevoProyecto, setNuevoProyecto] = useState<Omit<Proyecto, "id">>({
     nombre: "",
     cliente: "",
     progreso: 0,
@@ -84,14 +99,6 @@ export default function EmpresaPage() {
   const proyectosActivos = proyectos.filter(p => p.estado !== "Completado").length;
   const satisfaccion = 92; // porcentaje
 
-  // Cargar datos guardados
-  useEffect(() => {
-    const storedProyectos = localStorage.getItem("empresa_proyectos");
-    const storedLeads = localStorage.getItem("empresa_leads");
-    if (storedProyectos) setProyectos(JSON.parse(storedProyectos));
-    if (storedLeads) setLeads(JSON.parse(storedLeads));
-  }, []);
-
   useEffect(() => {
     localStorage.setItem("empresa_proyectos", JSON.stringify(proyectos));
     localStorage.setItem("empresa_leads", JSON.stringify(leads));
@@ -100,7 +107,8 @@ export default function EmpresaPage() {
   const agregarProyecto = () => {
     if (!nuevoProyecto.nombre || !nuevoProyecto.cliente || !nuevoProyecto.fechaEntrega) return;
     const nuevoId = Date.now().toString();
-    setProyectos([...proyectos, { id: nuevoId, ...nuevoProyecto as Proyecto }]);
+    const proyectoToAgregar: Proyecto = { id: nuevoId, ...nuevoProyecto };
+    setProyectos([...proyectos, proyectoToAgregar]);
     setNuevoProyecto({ nombre: "", cliente: "", progreso: 0, fechaEntrega: "", estado: "En desarrollo" });
     setMostrarModalProyecto(false);
   };
@@ -285,7 +293,7 @@ export default function EmpresaPage() {
             <input type="text" placeholder="Nombre del proyecto" value={nuevoProyecto.nombre} onChange={e => setNuevoProyecto({ ...nuevoProyecto, nombre: e.target.value })} className="w-full p-2 border rounded-xl mb-3" />
             <input type="text" placeholder="Cliente" value={nuevoProyecto.cliente} onChange={e => setNuevoProyecto({ ...nuevoProyecto, cliente: e.target.value })} className="w-full p-2 border rounded-xl mb-3" />
             <input type="date" placeholder="Fecha entrega" value={nuevoProyecto.fechaEntrega} onChange={e => setNuevoProyecto({ ...nuevoProyecto, fechaEntrega: e.target.value })} className="w-full p-2 border rounded-xl mb-3" />
-            <select value={nuevoProyecto.estado} onChange={e => setNuevoProyecto({ ...nuevoProyecto, estado: e.target.value as any })} className="w-full p-2 border rounded-xl mb-4">
+            <select value={nuevoProyecto.estado} onChange={e => setNuevoProyecto({ ...nuevoProyecto, estado: e.target.value as Proyecto["estado"] })} className="w-full p-2 border rounded-xl mb-4">
               <option value="En desarrollo">En desarrollo</option>
               <option value="En revisión">En revisión</option>
               <option value="Completado">Completado</option>
