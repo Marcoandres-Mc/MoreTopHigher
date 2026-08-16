@@ -17,6 +17,7 @@ export default function HabitsPage() {
   const [recursos, setRecursos] = useState<ResourceLink[]>([
     { id: 1, nombre: "Plan 2026", url: "https://docs.google.com/presentation/d/1YY7hV4I406u-wpXxT-GNFqYPvm0CRj8wyNd67FXrAo8/edit?usp=sharing", categoria: "📖 Libro" },
     { id: 2, nombre: "Tabla de habitos", url: "https://docs.google.com/spreadsheets/d/1q-K0287ABsOhAWaRPxxsAvmcXVAoGW960BZc0xtSijg/edit?usp=sharing", categoria: "📱 App" },
+    { id: 3, nombre: "Tabla de importancia", url: "https://docs.google.com/document/d/1ruPrwbe-EsvEaNmF5DAjV0HLwOd7-4WJX08vOk3WU3Y/edit?tab=t.0", categoria: "Pagina"}
   ]);
 
   // --- Citas motivacionales ---

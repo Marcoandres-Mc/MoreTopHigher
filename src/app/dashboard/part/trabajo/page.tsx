@@ -1,6 +1,7 @@
 // src/app/dashboard/trabajo/page.tsx
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Nav from "@/app/dashboard/components/Nav";
 import EmailCards from "./components/EmailCards";
 
@@ -18,6 +19,7 @@ interface Canal {
   nombre: string;
   url: string;
   revisado: boolean;
+  img: string; // URL de la imagen del canal (opcional)
 }
 
 interface Correo {
@@ -30,12 +32,48 @@ interface Correo {
 export default function TrabajoPage() {
   // --- Canales de búsqueda (plataformas y correos) - CORREGIDO (sin duplicados) ---
   const [canales, setCanales] = useState<Canal[]>([
-    { id: 1, nombre: "LinkedIn", url: "https://www.linkedin.com/jobs/", revisado: false },
-    { id: 2, nombre: "Computrabajo", url: "https://www.computrabajo.com.pe/", revisado: false },
-    { id: 3, nombre: "GetOnBoard", url: "https://www.getonboard.com/", revisado: false },
-    { id: 4, nombre: "Bumeran", url: "https://www.bumeran.com.pe/", revisado: false },
-    { id: 5, nombre: "UPC Bolsa de trabajo", url: "https://upc-csm.symplicity.com/students/app/home", revisado: false },
-    { id: 6, nombre: "Noticias UPC", url: "https://bolsadetrabajo.upc.edu.pe/noticias/", revisado: false },
+    { 
+      id: 1, 
+      nombre: "LinkedIn", 
+      url: "https://www.linkedin.com/jobs/", 
+      revisado: false, 
+      img: "https://upload.wikimedia.org/wikipedia/commons/a/aa/LinkedIn_2021.svg?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=original" // SVG oficial
+    },
+    { 
+      id: 2, 
+      nombre: "Computrabajo", 
+      url: "https://www.computrabajo.com.pe/", 
+      revisado: false, 
+      img: "https://cp.ct-stc.com/web8/20260727.02_01.41/c/img/logos/logoct-ogp.png" // Logo oficial
+    },
+    { 
+      id: 3, 
+      nombre: "GetOnBoard", 
+      url: "https://www.getonboard.com/", 
+      revisado: false, 
+      img: "https://www.getonboard.com/static/images/logo.svg"
+    },
+    { 
+      id: 4, 
+      nombre: "Bumeran", 
+      url: "https://www.bumeran.com.pe/", 
+      revisado: false, 
+      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSavAGxmW7bYLgkfWLVnljBybGhEJT4fGHklOu3w67nUH5UnrgDxhAJE5w&s=10"
+    },
+    { 
+      id: 5, 
+      nombre: "UPC Bolsa de trabajo", 
+      url: "https://upc-csm.symplicity.com/students/app/home", 
+      revisado: false, 
+      img: "https://upload.wikimedia.org/wikipedia/commons/f/fc/UPC_logo_transparente.png"
+    },
+    { 
+      id: 6, 
+      nombre: "Noticias UPC", 
+      url: "https://bolsadetrabajo.upc.edu.pe/noticias/", 
+      revisado: false, 
+      img: "https://upload.wikimedia.org/wikipedia/commons/f/fc/UPC_logo_transparente.png"
+    },
   ]);
 
   // --- Correos (nuevo array separado) ---
@@ -207,31 +245,32 @@ export default function TrabajoPage() {
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
                   <span className="text-2xl">🔍</span> Canales a revisar hoy
                 </h2>
-                <div className="space-y-3 max-h-80 overflow-y-auto">
-                  {canales.map(canal => (
-                    <div key={canal.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-xl transition">
-                      <div className="flex items-center gap-3 flex-1">
-                        <input
-                          type="checkbox"
-                          checked={canal.revisado}
-                          onChange={() => toggleCanal(canal.id)}
-                          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className={`text-gray-700 ${canal.revisado ? "line-through text-gray-400" : ""}`}>
-                          {canal.nombre}
-                        </span>
-                      </div>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+                  {canales.map((canal) => (
+                    <div key={canal.id} className="relative group">
+                      <input
+                        type="checkbox"
+                        checked={canal.revisado}
+                        onChange={() => toggleCanal(canal.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute top-1 left-1 z-10 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer bg-white/80 backdrop-blur-sm"
+                      />
                       <a
                         href={canal.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-full text-gray-600 transition"
+                        className="block p-2 hover:bg-gray-100 rounded-xl transition"
                       >
-                        Abrir →
+                        <img
+                          src={canal.img}
+                          alt={canal.nombre}
+                          className="w-full h-auto aspect-square object-contain max-w-[80px] mx-auto"
+                        />
                       </a>
                     </div>
                   ))}
                 </div>
+
                 <div className="mt-4 text-sm text-gray-500 border-t pt-3">
                   {canalesRevisados === totalCanales ? (
                     <span className="text-green-600 flex items-center gap-1">✅ ¡Completaste todas las revisiones de hoy!</span>

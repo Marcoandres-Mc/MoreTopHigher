@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import Nav from "../components/Nav";
 import Estadistica from "./components/Estadistica";
 import Container from "./components/Container";
+import TechResources from "./components/TechResources"
 
 export default function DashboardPage() {
   // ========== MÉTRICAS Y DATOS DE DESARROLLADOR ==========
@@ -285,6 +286,7 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+            <TechResources />
           </div>
 
           {/* COLUMNA DERECHA: Estadísticas + Páginas secundarias */}     
@@ -292,7 +294,7 @@ export default function DashboardPage() {
             
 
           
-
+          
         </div>
       </main>
       <Container />
