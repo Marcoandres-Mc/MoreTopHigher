@@ -65,11 +65,11 @@ export default function MindsetPage() {
     },
   ]);
 
-  // Estado para el modal de agregar/editar (opcional)
+  // Estado para el modal de agregar/editar
   const [showModal, setShowModal] = useState(false);
   const [editingLibro, setEditingLibro] = useState<Libro | null>(null);
 
-  // Función para agregar libro (opcional)
+  // Función para agregar libro
   const agregarLibro = (nuevoLibro: Omit<Libro, "id">) => {
     const nuevoId = Math.max(...libros.map(l => l.id), 0) + 1;
     setLibros([...libros, { ...nuevoLibro, id: nuevoId }]);
@@ -81,6 +81,9 @@ export default function MindsetPage() {
       setLibros(libros.filter(l => l.id !== id));
     }
   };
+
+  // Obtener los 3 primeros libros como "lectura actual"
+  const librosLeyendo = libros.slice(0, 3);
 
   return (
     <>
@@ -106,72 +109,158 @@ export default function MindsetPage() {
             </button>
           </div>
 
-          {/* Grid de libros */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {libros.map((libro) => (
+          {/* ===== SECCIÓN: LIBROS QUE ESTOY LEYENDO (3 primeros) ===== */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-2xl">📚</span>
+              <h2 className="text-xl font-bold text-gray-800">Libros que estoy leyendo ahora</h2>
+              <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">En progreso</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {librosLeyendo.map((libro) => (
                 <div
-                key={libro.id}
-                className="group relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all hover:-translate-y-1"
+                  key={libro.id}
+                  className="group relative bg-white rounded-2xl shadow-md border border-emerald-200 overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col md:flex-row items-center p-4 gap-4"
                 >
-                <a
+                  <a
                     href={libro.documentoLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block"
-                >
-                    {/* Imagen más pequeña */}
-                    <div className="aspect-[3/4] overflow-hidden bg-gray-100">
-                    <img
+                    className="flex items-center gap-4 w-full"
+                  >
+                    {/* Imagen más grande en la sección destacada */}
+                    <div className="w-24 h-32 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                      <img
                         src={libro.imagen}
                         alt={libro.titulo}
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                         onError={(e) => {
-                        (e.target as HTMLImageElement).src = "https://via.placeholder.com/200x300?text=📖";
+                          (e.target as HTMLImageElement).src = "https://via.placeholder.com/100x150?text=📖";
                         }}
-                    />
+                      />
                     </div>
-                    
-                    {/* Información compacta */}
-                    <div className="p-2.5">
-                    <h3 className="font-semibold text-gray-800 text-xs line-clamp-2">{libro.titulo}</h3>
-                    <p className="text-[10px] text-gray-500 mt-0.5">{libro.autor}</p>
-                    {libro.descripcion && (
-                        <p className="text-[10px] text-gray-400 mt-1 line-clamp-1">{libro.descripcion}</p>
-                    )}
-                    <div className="mt-2 text-[10px] text-blue-600 font-medium flex items-center gap-1 group-hover:gap-2 transition">
-                        <span>Ver</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-bold text-gray-800 text-base">{libro.titulo}</h3>
+                          <p className="text-sm text-gray-500">{libro.autor}</p>
+                          {libro.descripcion && (
+                            <p className="text-xs text-gray-400 mt-1 line-clamp-2">{libro.descripcion}</p>
+                          )}
+                        </div>
+                        <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full flex-shrink-0 ml-2">
+                          Leyendo
+                        </span>
+                      </div>
+                      <div className="mt-2 text-sm text-blue-600 font-medium flex items-center gap-1 group-hover:gap-2 transition">
+                        <span>Abrir documento</span>
                         <span>→</span>
+                      </div>
                     </div>
-                    </div>
-                </a>
-
-                {/* Botones más pequeños */}
-                <div className="absolute top-1 right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition">
+                  </a>
+                  {/* Botones de acción en hover */}
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition">
                     <button
-                    onClick={(e) => {
+                      onClick={(e) => {
                         e.stopPropagation();
                         setEditingLibro(libro);
                         setShowModal(true);
+                      }}
+                      className="p-1.5 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white text-gray-600 hover:text-blue-600"
+                      title="Editar"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        eliminarLibro(libro.id);
+                      }}
+                      className="p-1.5 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white text-gray-600 hover:text-red-600"
+                      title="Eliminar"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ===== SEPARADOR ===== */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-gradient-to-br from-amber-50 via-orange-50/20 to-yellow-50 px-4 text-sm text-gray-400">
+                📖 Todos los libros
+              </span>
+            </div>
+          </div>
+
+          {/* Grid completo de libros */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {libros.map((libro) => (
+              <div
+                key={libro.id}
+                className="group relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all hover:-translate-y-1"
+              >
+                <a
+                  href={libro.documentoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <div className="aspect-[3/4] overflow-hidden bg-gray-100">
+                    <img
+                      src={libro.imagen}
+                      alt={libro.titulo}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "https://via.placeholder.com/200x300?text=📖";
+                      }}
+                    />
+                  </div>
+                  <div className="p-2.5">
+                    <h3 className="font-semibold text-gray-800 text-xs line-clamp-2">{libro.titulo}</h3>
+                    <p className="text-[10px] text-gray-500 mt-0.5">{libro.autor}</p>
+                    {libro.descripcion && (
+                      <p className="text-[10px] text-gray-400 mt-1 line-clamp-1">{libro.descripcion}</p>
+                    )}
+                    <div className="mt-2 text-[10px] text-blue-600 font-medium flex items-center gap-1 group-hover:gap-2 transition">
+                      <span>Ver</span>
+                      <span>→</span>
+                    </div>
+                  </div>
+                </a>
+
+                <div className="absolute top-1 right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingLibro(libro);
+                      setShowModal(true);
                     }}
                     className="p-1 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white text-gray-600 hover:text-blue-600 text-xs"
                     title="Editar"
-                    >
+                  >
                     ✏️
-                    </button>
-                    <button
+                  </button>
+                  <button
                     onClick={(e) => {
-                        e.stopPropagation();
-                        eliminarLibro(libro.id);
+                      e.stopPropagation();
+                      eliminarLibro(libro.id);
                     }}
                     className="p-1 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white text-gray-600 hover:text-red-600 text-xs"
                     title="Eliminar"
-                    >
+                  >
                     🗑️
-                    </button>
+                  </button>
                 </div>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
 
           {libros.length === 0 && (
             <div className="text-center py-12 text-gray-400">
@@ -181,7 +270,7 @@ export default function MindsetPage() {
         </div>
       </div>
 
-      {/* Modal para agregar/editar libro (opcional) */}
+      {/* Modal para agregar/editar libro */}
       {showModal && (
         <LibroModal
           libro={editingLibro}

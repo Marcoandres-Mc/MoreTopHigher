@@ -28,61 +28,59 @@ export default function FeatureCard({
 }: FeatureCardProps) {
   return (
     <div 
-      className={`group relative bg-gradient-to-br ${gradient} backdrop-blur-sm rounded-tr-2xl rounded-tl-2xl shadow-lg border border-white/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${onClick ? 'cursor-pointer' : ''}`}
-      onClick={onClick}
-    >
-      {/* Badge flotante */}
-      {badge && (
-        <span className="absolute -top-2 -right-2 z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-          {badge}
-        </span>
+  className={`group relative bg-gradient-to-br ${gradient} backdrop-blur-sm rounded-2xl shadow-md border border-white/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${onClick ? 'cursor-pointer' : ''}`}
+  onClick={onClick}
+>
+  {/* Badge flotante más pequeño */}
+  {badge && (
+    <span className="absolute -top-1.5 -right-1.5 z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
+      {badge}
+    </span>
+  )}
+
+  {/* Efecto de brillo sutil en hover */}
+  <div className="rounded-2xl absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+  {/* Contenido */}
+  <a href={url || '#'} className="relative z-0 block">
+    {/* Imagen o icono más pequeño */}
+    {image && (
+      <div className="overflow-hidden rounded-t-2xl">
+        <img 
+          src={image} 
+          alt={title}
+          className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
+    )}
+    {!image && icon && (
+      <div className="text-4xl mb-2 transform transition-transform group-hover:scale-110 group-hover:rotate-3 inline-block">
+        {icon}
+      </div>
+    )}
+    <div className="p-3 flex flex-col items-start gap-1.5">
+      {/* Título más pequeño */}
+      <h3 className="text-base font-bold text-gray-800 group-hover:text-orange-700 transition-colors">
+        {title}
+        {/* Subtítulo más pequeño */}
+        {subtitle && (
+          <p className="text-xs text-orange-600 font-medium">{subtitle}</p>
+        )}
+      </h3>
+
+      {/* Descripción más pequeña */}
+      {description && (
+        <p className="text-gray-600 text-xs leading-relaxed line-clamp-2">{description}</p>
       )}
 
-      {/* Efecto de brillo sutil en hover */}
-      <div className="rounded-2xl absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-      {/* Contenido */}
-      <a href={url || '#'} className="relative z-0 ">
-        {/* Imagen o icono */}
-        {image && (
-          <div className="overflow-hidden rounded-tr-2xl rounded-tl-2xl">
-            <img 
-              src={image} 
-              alt={title}
-              className="w-full h-60 object-cover  transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-        )}
-        {!image && icon && (
-          <div className="text-5xl mb-4 transform transition-transform group-hover:scale-110 group-hover:rotate-3 inline-block">
-            {icon}
-          </div>
-        )}
-        <div className="p-4 flex flex-col items-start gap-2">
-          {/* Título */}
-          <h3 className="text-xl font-bold text-gray-800 group-hover:text-orange-700 transition-colors">
-            {title}
-            {/* Subtítulo */}
-          {subtitle && (
-            <p className="text-sm text-orange-600 font-medium ">{subtitle}</p>
-          )}
-          </h3>
-
-          
-
-          {/* Descripción */}
-          {description && (
-            <p className="text-gray-600 text-sm  leading-relaxed">{description}</p>
-          )}
-
-          {/* Children (contenido adicional) */}
-          {children && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {children}
-            </div>
-          )}
+      {/* Children (contenido adicional) más compacto */}
+      {children && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {children}
         </div>
-      </a>
+      )}
     </div>
+  </a>
+</div>
   );
 }

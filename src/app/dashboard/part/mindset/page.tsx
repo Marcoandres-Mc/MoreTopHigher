@@ -4,6 +4,7 @@ import { useState } from "react";
 import ScoreCircle from "@/components/ScoreCircle";
 import Nav from "@/app/dashboard/components/Nav";
 import FeatureCard from "../../components/FeatureCard";
+import Image from "next/image";
 
 export default function MindsetPage() {
   // Métricas de mentalidad
@@ -147,51 +148,7 @@ export default function MindsetPage() {
             {/* Columna izquierda (2/3) */}
             <div className="lg:col-span-2 space-y-6">
               {/* Métricas detalladas - tarjeta con gradiente sutil */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-6 transition-all hover:shadow-xl">
-                <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                  <span className="text-2xl">📊</span> Áreas de desarrollo
-                  mental
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {[
-                    {
-                      label: "💭 Pensamiento positivo",
-                      value: pensamientoPositivo,
-                      color: "from-green-400 to-emerald-500",
-                    },
-                    {
-                      label: "🔍 Autoconocimiento",
-                      value: autoconocimiento,
-                      color: "from-blue-400 to-indigo-500",
-                    },
-                    {
-                      label: "🌊 Gestión emocional",
-                      value: gestionEmocional,
-                      color: "from-purple-400 to-pink-500",
-                    },
-                    {
-                      label: "⚡ Resiliencia",
-                      value: resiliencia,
-                      color: "from-orange-400 to-red-500",
-                    },
-                  ].map((item, idx) => (
-                    <div key={idx} className="group">
-                      <div className="flex justify-between text-sm mb-1.5">
-                        <span className="text-gray-700">{item.label}</span>
-                        <span className="font-bold text-gray-800">
-                          {item.value}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200/80 rounded-full h-2.5 overflow-hidden">
-                        <div
-                          className={`bg-gradient-to-r ${item.color} h-2.5 rounded-full transition-all duration-700 ease-out group-hover:scale-x-105`}
-                          style={{ width: `${item.value}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              
 
 <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-6 transition-all hover:shadow-xl">
                 <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
@@ -296,6 +253,31 @@ export default function MindsetPage() {
 
             {/* Columna derecha (1/3) */}
             <div className="space-y-6">
+              {/* Meta del diario - tarjeta con contador animado */}
+              <a href="/dashboard/part/mindset/libros" className="block">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80  text-center transition-all hover:shadow-xl">
+                <img className="flex justify-center text-4xl mb-2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlBbLsndNvuXKhdNCS830yEwYdn-JzMmwZtOS9QZh3UtCHJPeGomxKVtBZ&s=10" alt="Libros"  />
+                <h3 className="font-semibold text-gray-800 mb-3">
+                  Libros
+                </h3>
+                <div className="text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent">
+                  {diarioEscrito}{" "}
+                  <span className="text-2xl text-gray-400">/ {metaDiario}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3 mt-3 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-orange-500 to-amber-500 h-3 rounded-full transition-all duration-700"
+                    style={{ width: `${progresoDiario}%` }}
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-3">
+                  Días escritos este mes
+                </p>
+                <div className="mt-4 text-sm text-orange-600 bg-orange-50 inline-block px-3 py-1 rounded-full">
+                  🎯 Meta: {metaDiario} días
+                </div>
+              </div>
+              </a>
               {/* Tarjeta de mentalidad general - efecto glassmorphism mejorado */}
               <div className="relative group bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-6 flex flex-col md:flex-row items-center justify-between gap-6 transition-all duration-300 hover:shadow-2xl hover:scale-[1.01]">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 to-amber-50/30 rounded-3xl -z-10"></div>
@@ -335,29 +317,7 @@ export default function MindsetPage() {
                   </div>
                 </div>
               </div>
-              {/* Meta del diario - tarjeta con contador animado */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-6 text-center transition-all hover:shadow-xl">
-                <div className="flex justify-center text-4xl mb-2">📓</div>
-                <h3 className="font-semibold text-gray-800 mb-3">
-                  Diario personal
-                </h3>
-                <div className="text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent">
-                  {diarioEscrito}{" "}
-                  <span className="text-2xl text-gray-400">/ {metaDiario}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3 mt-3 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-orange-500 to-amber-500 h-3 rounded-full transition-all duration-700"
-                    style={{ width: `${progresoDiario}%` }}
-                  />
-                </div>
-                <p className="text-xs text-gray-500 mt-3">
-                  Días escritos este mes
-                </p>
-                <div className="mt-4 text-sm text-orange-600 bg-orange-50 inline-block px-3 py-1 rounded-full">
-                  🎯 Meta: {metaDiario} días
-                </div>
-              </div>
+              
 
               {/* Recursos recomendados - con hover cards */}
               <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-5 transition-all hover:shadow-xl">

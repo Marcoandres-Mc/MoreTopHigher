@@ -48,10 +48,10 @@ export default function TrabajoPage() {
     },
     { 
       id: 3, 
-      nombre: "GetOnBoard", 
-      url: "https://www.getonboard.com/", 
+      nombre: "Indeed", 
+      url: "https://pe.indeed.com/", 
       revisado: false, 
-      img: "https://www.getonboard.com/static/images/logo.svg"
+      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4F9Wirf_1Lek-YsjCcd6n0xvryPKQPvfClvTuUHqg0ixFBar-wfsrvWLn&s=10"
     },
     { 
       id: 4, 
@@ -280,101 +280,9 @@ export default function TrabajoPage() {
                 </div>
               </div>
 
+            
+
               
-
-              {/* Tarjeta: Agregar nueva postulación */}
-              <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5">
-                <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
-                  <span className="text-2xl">📝</span> Registrar postulación
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Empresa"
-                    value={nuevaPostulacion.empresa}
-                    onChange={(e) => setNuevaPostulacion({ ...nuevaPostulacion, empresa: e.target.value })}
-                    className="p-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Puesto"
-                    value={nuevaPostulacion.puesto}
-                    onChange={(e) => setNuevaPostulacion({ ...nuevaPostulacion, puesto: e.target.value })}
-                    className="p-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400"
-                  />
-                  <select
-                    value={nuevaPostulacion.estado}
-                    onChange={(e) => setNuevaPostulacion({ ...nuevaPostulacion, estado: e.target.value as Postulacion["estado"] })}
-                    className="p-2 border border-gray-200 rounded-xl"
-                  >
-                    <option value="Enviado">Enviado</option>
-                    <option value="Entrevista">Entrevista</option>
-                    <option value="Rechazado">Rechazado</option>
-                    <option value="Ofrecido">Ofrecido</option>
-                  </select>
-                  <input
-                    type="url"
-                    placeholder="URL de la oferta (opcional)"
-                    value={nuevaPostulacion.url}
-                    onChange={(e) => setNuevaPostulacion({ ...nuevaPostulacion, url: e.target.value })}
-                    className="p-2 border border-gray-200 rounded-xl"
-                  />
-                </div>
-                <button
-                  onClick={agregarPostulacion}
-                  className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-xl transition"
-                >
-                  + Agregar postulación
-                </button>
-              </div>
-
-              {/* Tabla de postulaciones */}
-              <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5">
-                <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
-                  <span className="text-2xl">📋</span> Mis postulaciones
-                </h2>
-                {postulaciones.length === 0 ? (
-                  <p className="text-gray-400 text-center py-4">Aún no has registrado postulaciones.</p>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="border-b border-gray-200">
-                        <tr className="text-left text-gray-500">
-                          <th className="pb-2">Empresa</th>
-                          <th className="pb-2">Puesto</th>
-                          <th className="pb-2">Estado</th>
-                          <th className="pb-2">Fecha</th>
-                          <th className="pb-2"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {postulaciones.map((p) => (
-                          <tr key={p.id} className="border-b border-gray-100 hover:bg-gray-50">
-                            <td className="py-2 font-medium">{p.empresa}</td>
-                            <td className="py-2">{p.puesto}</td>
-                            <td className="py-2">
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium
-                                ${p.estado === "Enviado" ? "bg-blue-100 text-blue-700" : ""}
-                                ${p.estado === "Entrevista" ? "bg-yellow-100 text-yellow-700" : ""}
-                                ${p.estado === "Rechazado" ? "bg-red-100 text-red-700" : ""}
-                                ${p.estado === "Ofrecido" ? "bg-green-100 text-green-700" : ""}
-                              `}>
-                                {p.estado}
-                              </span>
-                            </td>
-                            <td className="py-2 text-gray-500">{p.fecha}</td>
-                            <td className="py-2">
-                              {p.url && (
-                                <a href={p.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-xs">Ver</a>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
             </div>
 
             {/* Columna derecha: tareas, correos pendientes y tips */}
@@ -452,30 +360,6 @@ export default function TrabajoPage() {
                 <div className="mt-3 pt-2 border-t text-xs text-gray-400">
                   {tareasCompletadas === totalTareas ? "🎉 ¡Todas las tareas completadas!" : `Progreso: ${tareasCompletadas}/${totalTareas}`}
                 </div>
-              </div>
-
-              {/* Bandeja de correos pendientes (simulada) */}
-              <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5">
-                <h3 className="font-semibold text-gray-800 flex items-center gap-2 mb-3">
-                  <span>📬</span> Correos por revisar
-                </h3>
-                {correosPendientes.filter(c => !c.leido).length === 0 ? (
-                  <p className="text-gray-400 text-sm">✅ Bandeja limpia - No hay correos nuevos.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {correosPendientes.map(correo => !correo.leido && (
-                      <div key={correo.id} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg">
-                        <span className="text-sm text-gray-700 truncate flex-1">{correo.asunto}</span>
-                        <button
-                          onClick={() => marcarCorreoLeido(correo.id)}
-                          className="text-xs bg-white border border-gray-300 px-2 py-1 rounded-full hover:bg-gray-100"
-                        >
-                          Marcar leído
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {/* Tip del día */}

@@ -186,7 +186,7 @@ export default function DashboardPage() {
             <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-700 p-5 shadow-xl">
               <div className=" space-y-6">
                 {/* Proyectos personales */}
-                <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-700 p-5 shadow-xl">
+                <div className="bg-gray-800/70 backdrop-blur-sm rounded-2xl bagroun border border-gray-700 p-5 shadow-xl">
                   <h2 className="text-xl font-semibold text-gray-100 flex items-center gap-2 mb-3">
                     <span className="text-2xl">💻</span> Proyectos personales
                   </h2>
