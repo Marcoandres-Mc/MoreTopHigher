@@ -487,45 +487,8 @@ export default function CoursesPage() {
               </div>
             )}
           </div>
-          <div className="w-full space-y-4">
-            {/* Panel de Materiales del curso (Recursos por semanas) */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <button
-                onClick={() => togglePanel("materiales")}
-                className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">📦</span>
-                  <h2 className="text-lg font-semibold text-gray-800">
-                    Materiales del curso
-                  </h2>
-                  <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
-                    Recursos por semanas
-                  </span>
-                </div>
-                <span className="text-gray-400 transition-transform duration-200">
-                  {openPanel === "materiales" ? "▲" : "▼"}
-                </span>
-              </button>
-
-              {openPanel === "materiales" && (
-                <div className="p-6 border-t border-gray-100">
-                  <MaterialCursos
-                    courses={courses}
-                    selectedCourse={selectedCourse}
-                    calculateCourseAverage={calculateCourseAverage}
-                    deleteCourse={deleteCourse}
-                    setSelectedCourse={setSelectedCourse}
-                    setEditingCourse={setEditingCourse}
-                    setShowCourseModal={setShowCourseModal}
-                    onAddWeek={addWeek}
-                    onDeleteWeek={deleteWeek}
-                    onAddResourceToWeek={addResourceToWeek}
-                    onDeleteResourceFromWeek={deleteResourceFromWeek}
-                  />
-                </div>
-              )}
-            </div>
+          <div className="w-full ">
+          
 
             {/* Panel de Notas y promedio */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">

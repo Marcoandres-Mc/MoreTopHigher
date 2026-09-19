@@ -49,8 +49,8 @@ const Nav = () => {
           border: "border-green-700",
         },
         {
-          name: "Empresa",
-          href: "/dashboard/part/empresa",
+          name: "Negocios",
+          href: "/dashboard/part/negocios",
           icon: "🏢",
           gradient: "from-purple-900/50 to-purple-800/30",
           border: "border-purple-700",

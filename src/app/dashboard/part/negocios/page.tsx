@@ -1,3 +1,4 @@
+// src/app/dashboard/empresa/page.tsx
 "use client";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -24,11 +25,11 @@ interface Lead {
 export default function EmpresaPage() {
   const router = useRouter();
 
-  // Datos de ejemplo o cargados desde localStorage
+  // --- Estado: Proyectos ---
   const getInitialProyectos = (): Proyecto[] => {
     if (typeof window !== "undefined") {
-      const storedProyectos = localStorage.getItem("empresa_proyectos");
-      if (storedProyectos) return JSON.parse(storedProyectos);
+      const stored = localStorage.getItem("empresa_proyectos");
+      if (stored) return JSON.parse(stored);
     }
     return [
       {
@@ -60,8 +61,8 @@ export default function EmpresaPage() {
 
   const getInitialLeads = (): Lead[] => {
     if (typeof window !== "undefined") {
-      const storedLeads = localStorage.getItem("empresa_leads");
-      if (storedLeads) return JSON.parse(storedLeads);
+      const stored = localStorage.getItem("empresa_leads");
+      if (stored) return JSON.parse(stored);
     }
     return [
       {
@@ -84,6 +85,41 @@ export default function EmpresaPage() {
   const [proyectos, setProyectos] = useState<Proyecto[]>(getInitialProyectos);
   const [leads, setLeads] = useState<Lead[]>(getInitialLeads);
 
+  // --- Estado: Documento e Ideas (NUEVO) ---
+  const [documentoLink, setDocumentoLink] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("empresa_documento") || "";
+    }
+    return "";
+  });
+  const [mostrarEditorDocumento, setMostrarEditorDocumento] = useState(false);
+
+  const [ideas, setIdeas] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("empresa_ideas") || "";
+    }
+    return "";
+  });
+
+  // Guardar documento e ideas en localStorage
+  useEffect(() => {
+    localStorage.setItem("empresa_documento", documentoLink);
+  }, [documentoLink]);
+
+  useEffect(() => {
+    localStorage.setItem("empresa_ideas", ideas);
+  }, [ideas]);
+
+  // --- Estado: Leads (nuevo) ---
+  const [mostrarModalLead, setMostrarModalLead] = useState(false);
+  const [nuevoLead, setNuevoLead] = useState<Omit<Lead, "id">>({
+    empresa: "",
+    contacto: "",
+    email: "",
+    etapa: "Nuevo",
+  });
+
+  // --- Estado: Proyectos (modal) ---
   const [mostrarModalProyecto, setMostrarModalProyecto] = useState(false);
   const [nuevoProyecto, setNuevoProyecto] = useState<Omit<Proyecto, "id">>({
     nombre: "",
@@ -93,22 +129,17 @@ export default function EmpresaPage() {
     estado: "En desarrollo",
   });
 
-  // KPIs calculados
-  const ingresosMensuales = 12500; // ejemplo fijo, podría ser dinámico
+  // --- KPIs ---
+  const ingresosMensuales = 12500;
   const totalClientes = [...new Set(proyectos.map(p => p.cliente))].length;
   const proyectosActivos = proyectos.filter(p => p.estado !== "Completado").length;
-  const satisfaccion = 92; // porcentaje
+  const satisfaccion = 92;
 
-  useEffect(() => {
-    localStorage.setItem("empresa_proyectos", JSON.stringify(proyectos));
-    localStorage.setItem("empresa_leads", JSON.stringify(leads));
-  }, [proyectos, leads]);
-
+  // --- Funciones proyectos ---
   const agregarProyecto = () => {
     if (!nuevoProyecto.nombre || !nuevoProyecto.cliente || !nuevoProyecto.fechaEntrega) return;
     const nuevoId = Date.now().toString();
-    const proyectoToAgregar: Proyecto = { id: nuevoId, ...nuevoProyecto };
-    setProyectos([...proyectos, proyectoToAgregar]);
+    setProyectos([...proyectos, { id: nuevoId, ...nuevoProyecto }]);
     setNuevoProyecto({ nombre: "", cliente: "", progreso: 0, fechaEntrega: "", estado: "En desarrollo" });
     setMostrarModalProyecto(false);
   };
@@ -120,6 +151,21 @@ export default function EmpresaPage() {
   const eliminarProyecto = (id: string) => {
     if (confirm("¿Eliminar este proyecto?")) {
       setProyectos(proyectos.filter(p => p.id !== id));
+    }
+  };
+
+  // --- Funciones leads ---
+  const agregarLead = () => {
+    if (!nuevoLead.empresa || !nuevoLead.contacto || !nuevoLead.email) return;
+    const nuevoId = Date.now().toString();
+    setLeads([...leads, { id: nuevoId, ...nuevoLead }]);
+    setNuevoLead({ empresa: "", contacto: "", email: "", etapa: "Nuevo" });
+    setMostrarModalLead(false);
+  };
+
+  const eliminarLead = (id: string) => {
+    if (confirm("¿Eliminar este lead?")) {
+      setLeads(leads.filter(l => l.id !== id));
     }
   };
 
@@ -144,34 +190,7 @@ export default function EmpresaPage() {
             </button>
           </div>
 
-          {/* KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border p-5 flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 text-sm">Ingresos mensuales</p>
-                <p className="text-2xl font-bold text-gray-800">${ingresosMensuales.toLocaleString()}</p>
-                <p className="text-xs text-green-600">+12% vs mes anterior</p>
-              </div>
-              <span className="text-3xl">💰</span>
-            </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border p-5">
-              <p className="text-gray-500 text-sm">Clientes activos</p>
-              <p className="text-3xl font-bold text-gray-800">{totalClientes}</p>
-              <p className="text-xs text-gray-400">{proyectos.length} proyectos totales</p>
-            </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border p-5">
-              <p className="text-gray-500 text-sm">Proyectos activos</p>
-              <p className="text-3xl font-bold text-amber-600">{proyectosActivos}</p>
-              <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: `${(proyectosActivos / proyectos.length) * 100}%` }} />
-              </div>
-            </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border p-5">
-              <p className="text-gray-500 text-sm">Satisfacción cliente</p>
-              <p className="text-3xl font-bold text-green-600">{satisfaccion}%</p>
-              <p className="text-xs text-gray-400">Basado en encuestas</p>
-            </div>
-          </div>
+          
 
           {/* Proyectos y Leads en dos columnas */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -192,9 +211,7 @@ export default function EmpresaPage() {
                           <p className="text-xs text-gray-500">Cliente: {proyecto.cliente}</p>
                           <p className="text-xs text-gray-400">Entrega: {proyecto.fechaEntrega}</p>
                         </div>
-                        <div className="flex gap-2">
-                          <button onClick={() => eliminarProyecto(proyecto.id)} className="text-red-500 hover:text-red-700 text-sm">🗑️</button>
-                        </div>
+                        <button onClick={() => eliminarProyecto(proyecto.id)} className="text-red-500 hover:text-red-700 text-sm">🗑️</button>
                       </div>
                       <div className="mt-2">
                         <div className="flex justify-between text-xs mb-1">
@@ -223,77 +240,62 @@ export default function EmpresaPage() {
                 </div>
               )}
             </div>
-
-            {/* Leads / Clientes potenciales */}
+            {/* Tarjeta: Ideas */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border p-5">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🤝</span> Leads y oportunidades
-              </h2>
-              {leads.length === 0 ? (
-                <p className="text-gray-400 text-center py-4">Sin leads. Agrega uno.</p>
-              ) : (
-                <div className="space-y-3">
-                  {leads.map(lead => (
-                    <div key={lead.id} className="bg-gray-50 rounded-xl p-3 flex justify-between items-center">
-                      <div>
-                        <p className="font-medium text-gray-800">{lead.empresa}</p>
-                        <p className="text-xs text-gray-500">{lead.contacto} - {lead.email}</p>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          lead.etapa === "Cerrado" ? "bg-green-100 text-green-700" :
-                          lead.etapa === "Negociación" ? "bg-amber-100 text-amber-700" :
-                          "bg-blue-100 text-blue-700"
-                        }`}>
-                          {lead.etapa}
-                        </span>
-                      </div>
-                      <button className="text-gray-400 hover:text-blue-600">✏️</button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <button className="mt-4 text-blue-600 text-sm flex items-center gap-1">+ Agregar lead</button>
+              <h3 className="font-bold text-gray-800 flex items-center gap-2 mb-3">
+                <span>💡</span> Mis ideas
+              </h3>
+              <textarea
+                value={ideas}
+                onChange={(e) => setIdeas(e.target.value)}
+                placeholder="Escribe aquí tus ideas de negocio, mejoras, reflexiones..."
+                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-400 resize-none h-32 text-sm"
+              />
+              <p className="text-xs text-gray-400 mt-2">Se guarda automáticamente mientras escribes.</p>
             </div>
-          </div>
 
-          {/* Simulador de objetivos / cronómetro de enfoque */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-5 border">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">🎯 Objetivo trimestral</h3>
-              <p className="text-2xl font-bold text-indigo-700 mt-2">$50,000</p>
-              <p className="text-sm text-gray-600">Facturación al 30 de junio</p>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
-                <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${(ingresosMensuales * 3) / 50000 * 100}%` }} />
-              </div>
-              <p className="text-xs text-gray-500 mt-2">Progreso actual: {Math.round((ingresosMensuales * 3) / 50000 * 100)}%</p>
-            </div>
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-5 border">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">⏱️ Enfoque empresarial</h3>
-              <p className="text-sm text-gray-600">Dedica 25 minutos sin distracciones a tu empresa.</p>
-              <button className="mt-3 bg-orange-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-orange-600 transition">Iniciar temporizador</button>
-            </div>
+            
           </div>
+          
 
-          {/* Botón volver */}
-          <div className="flex justify-center mt-8">
-            <button
-              onClick={() => router.push("/dashboard/mindset")}
-              className="px-8 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold hover:scale-105 transition shadow-lg"
-            >
-              Volver a Mindset
-            </button>
-          </div>
+          
+
+          
+
+          
         </div>
       </div>
 
-      {/* Modal nuevo proyecto */}
+      {/* Modal: Nuevo proyecto */}
       {mostrarModalProyecto && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
             <h2 className="text-xl font-bold mb-4">Nuevo proyecto</h2>
-            <input type="text" placeholder="Nombre del proyecto" value={nuevoProyecto.nombre} onChange={e => setNuevoProyecto({ ...nuevoProyecto, nombre: e.target.value })} className="w-full p-2 border rounded-xl mb-3" />
-            <input type="text" placeholder="Cliente" value={nuevoProyecto.cliente} onChange={e => setNuevoProyecto({ ...nuevoProyecto, cliente: e.target.value })} className="w-full p-2 border rounded-xl mb-3" />
-            <input type="date" placeholder="Fecha entrega" value={nuevoProyecto.fechaEntrega} onChange={e => setNuevoProyecto({ ...nuevoProyecto, fechaEntrega: e.target.value })} className="w-full p-2 border rounded-xl mb-3" />
-            <select value={nuevoProyecto.estado} onChange={e => setNuevoProyecto({ ...nuevoProyecto, estado: e.target.value as Proyecto["estado"] })} className="w-full p-2 border rounded-xl mb-4">
+            <input
+              type="text"
+              placeholder="Nombre del proyecto"
+              value={nuevoProyecto.nombre}
+              onChange={e => setNuevoProyecto({ ...nuevoProyecto, nombre: e.target.value })}
+              className="w-full p-2 border rounded-xl mb-3"
+            />
+            <input
+              type="text"
+              placeholder="Cliente"
+              value={nuevoProyecto.cliente}
+              onChange={e => setNuevoProyecto({ ...nuevoProyecto, cliente: e.target.value })}
+              className="w-full p-2 border rounded-xl mb-3"
+            />
+            <input
+              type="date"
+              value={nuevoProyecto.fechaEntrega}
+              onChange={e => setNuevoProyecto({ ...nuevoProyecto, fechaEntrega: e.target.value })}
+              className="w-full p-2 border rounded-xl mb-3"
+            />
+            <select
+              value={nuevoProyecto.estado}
+              onChange={e => setNuevoProyecto({ ...nuevoProyecto, estado: e.target.value as Proyecto["estado"] })}
+              className="w-full p-2 border rounded-xl mb-4"
+            >
               <option value="En desarrollo">En desarrollo</option>
               <option value="En revisión">En revisión</option>
               <option value="Completado">Completado</option>
@@ -301,6 +303,50 @@ export default function EmpresaPage() {
             <div className="flex justify-end gap-3">
               <button onClick={() => setMostrarModalProyecto(false)} className="px-4 py-2 border rounded-xl">Cancelar</button>
               <button onClick={agregarProyecto} className="px-4 py-2 bg-blue-600 text-white rounded-xl">Guardar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Nuevo lead */}
+      {mostrarModalLead && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h2 className="text-xl font-bold mb-4">Nuevo lead</h2>
+            <input
+              type="text"
+              placeholder="Empresa"
+              value={nuevoLead.empresa}
+              onChange={e => setNuevoLead({ ...nuevoLead, empresa: e.target.value })}
+              className="w-full p-2 border rounded-xl mb-3"
+            />
+            <input
+              type="text"
+              placeholder="Contacto"
+              value={nuevoLead.contacto}
+              onChange={e => setNuevoLead({ ...nuevoLead, contacto: e.target.value })}
+              className="w-full p-2 border rounded-xl mb-3"
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={nuevoLead.email}
+              onChange={e => setNuevoLead({ ...nuevoLead, email: e.target.value })}
+              className="w-full p-2 border rounded-xl mb-3"
+            />
+            <select
+              value={nuevoLead.etapa}
+              onChange={e => setNuevoLead({ ...nuevoLead, etapa: e.target.value as Lead["etapa"] })}
+              className="w-full p-2 border rounded-xl mb-4"
+            >
+              <option value="Nuevo">Nuevo</option>
+              <option value="Contactado">Contactado</option>
+              <option value="Negociación">Negociación</option>
+              <option value="Cerrado">Cerrado</option>
+            </select>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setMostrarModalLead(false)} className="px-4 py-2 border rounded-xl">Cancelar</button>
+              <button onClick={agregarLead} className="px-4 py-2 bg-blue-600 text-white rounded-xl">Guardar</button>
             </div>
           </div>
         </div>

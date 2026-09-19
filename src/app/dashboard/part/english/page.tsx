@@ -161,52 +161,78 @@ export default function EnglishPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Columna izquierda (2/3) */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="w-full px-5 py-5 flex  gap-4">
-                <a
-                  href="https://docs.google.com/document/d/1QkIL_rLgP8COetPpnT4O2r8774V_4n4OZGU4IFlrCIg/edit?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex w-[400] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-sm border border-blue-200 p-5 hover:shadow-md transition-all hover:scale-[1.01] group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl bg-white/50 p-3 rounded-full group-hover:bg-white/80 transition">
-                      📘
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-800 text-lg">Gramática Inglesa</h3>
-                      <p className="text-sm text-gray-600">
-                        Accede a tu documento de gramática para repasar reglas, tiempos verbales y ejercicios prácticos.
-                      </p>
-                      <div className="mt-2 flex items-center gap-1 text-blue-600 text-sm font-medium">
-                        <span>Ver documento</span>
-                        <span className="group-hover:translate-x-1 transition">→</span>
-                      </div>
-                    </div>
+            <div className="w-full">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <span className="text-3xl">📚</span> Documentos de estudio
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {/* Tarjeta 1: Gramática */}
+              <a
+                href="https://docs.google.com/document/d/1QkIL_rLgP8COetPpnT4O2r8774V_4n4OZGU4IFlrCIg/edit?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-lg transition-all hover:-translate-y-1 hover:border-blue-300 flex items-start gap-3"
+              >
+                <div className="text-3xl bg-blue-50 p-2.5 rounded-full group-hover:bg-blue-100 transition flex-shrink-0">
+                  📘
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-800 text-base">Gramática Inglesa</h3>
+                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                    Repasa reglas, tiempos verbales y ejercicios prácticos.
+                  </p>
+                  <div className="mt-2 flex items-center gap-1 text-blue-600 text-xs font-medium group-hover:gap-2 transition-all">
+                    <span>Ver documento</span>
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
                   </div>
-                </a>
-                <a
-                  href="https://docs.google.com/document/d/1QkIL_rLgP8COetPpnT4O2r8774V_4n4OZGU4IFlrCIg/edit?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex w-[400] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-sm border border-blue-200 p-5 hover:shadow-md transition-all hover:scale-[1.01] group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl bg-white/50 p-3 rounded-full group-hover:bg-white/80 transition">
-                      📘
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-800 text-lg">Memorizar palabras</h3>
-                      <p className="text-sm text-gray-600">
-                        Accede a tu documento de vocabulario para repasar palabras y frases útiles.
-                      </p>
-                      <div className="mt-2 flex items-center gap-1 text-blue-600 text-sm font-medium">
-                        <span>Ver documento</span>
-                        <span className="group-hover:translate-x-1 transition">→</span>
-                      </div>
-                    </div>
+                </div>
+              </a>
+
+              {/* Tarjeta 2: Vocabulario */}
+              <a
+                href="https://docs.google.com/document/d/1QkIL_rLgP8COetPpnT4O2r8774V_4n4OZGU4IFlrCIg/edit?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-lg transition-all hover:-translate-y-1 hover:border-emerald-300 flex items-start gap-3"
+              >
+                <div className="text-3xl bg-emerald-50 p-2.5 rounded-full group-hover:bg-emerald-100 transition flex-shrink-0">
+                  📝
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-800 text-base">Memorizar palabras</h3>
+                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                    Vocabulario clave y frases útiles para ampliar tu léxico.
+                  </p>
+                  <div className="mt-2 flex items-center gap-1 text-emerald-600 text-xs font-medium group-hover:gap-2 transition-all">
+                    <span>Ver documento</span>
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
                   </div>
-                </a>
-              </div>
+                </div>
+              </a>
+
+              {/* Tarjeta 3: Examen UPC */}
+              <a
+                href="https://docs.google.com/document/d/1QkIL_rLgP8COetPpnT4O2r8774V_4n4OZGU4IFlrCIg/edit?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group bg-white rounded-2xl shadow-sm border border-gray-200 p-4 hover:shadow-lg transition-all hover:-translate-y-1 hover:border-purple-300 flex items-start gap-3"
+              >
+                <div className="text-3xl bg-purple-50 p-2.5 rounded-full group-hover:bg-purple-100 transition flex-shrink-0">
+                  🎯
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-800 text-base">Examen test UPC</h3>
+                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                    Prepárate con simulacros y material específico para tu prueba.
+                  </p>
+                  <div className="mt-2 flex items-center gap-1 text-purple-600 text-xs font-medium group-hover:gap-2 transition-all">
+                    <span>Ver documento</span>
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
             {/* Habilidades: Listening, Speaking, Reading, Writing */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               

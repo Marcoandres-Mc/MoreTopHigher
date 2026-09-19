@@ -143,14 +143,57 @@ export default function MindsetPage() {
               cuenta.
             </p>
           </div>
+          
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
             {/* Columna izquierda (2/3) */}
             <div className="lg:col-span-2 space-y-6">
               {/* Métricas detalladas - tarjeta con gradiente sutil */}
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+            <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-4">
+              <span>📚</span> Material de estudio y práctica
+            </h3>
+
+            {/* Documento */}
+            <div className="mb-5">
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://miro.com/app/board/uXjVHCBvOeQ=/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-md transition-all hover:-translate-y-0.5"
+                >
+                  <div className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm text-2xl">
+                    📒
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800 group-hover:text-blue-600 transition">Estilo de vida</p>
+                    <p className="text-xs text-gray-500">Explicacion y mejora en el habla</p>
+                  </div>
+                  <span className="text-gray-300 group-hover:text-blue-500 transition text-sm">→</span>
+                </a>
+                <a
+                  href="https://miro.com/app/board/uXjVH6_7PYI=/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-md transition-all hover:-translate-y-0.5"
+                >
+                  <div className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm text-2xl">
+                    📒
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800 group-hover:text-blue-600 transition">Miro</p>
+                    <p className="text-xs text-gray-500">Explicacion y mejora en el habla</p>
+                  </div>
+                  <span className="text-gray-300 group-hover:text-blue-500 transition text-sm">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
               
 
-<div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-6 transition-all hover:shadow-xl">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-6 transition-all hover:shadow-xl">
                 <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                   <span className="text-2xl">📊</span> Áreas de desarrollo
                   mental
@@ -188,26 +231,7 @@ export default function MindsetPage() {
               </div>
               </div>
 
-              {/* Afirmación del día - con efecto de tarjeta flotante */}
-              <div className="relative bg-gradient-to-r from-indigo-50/90 to-purple-50/90 backdrop-blur-sm rounded-3xl shadow-md border border-indigo-200/60 p-6 transition-all duration-300 hover:shadow-lg">
-                <div className="absolute -top-3 -right-3 w-20 h-20 bg-gradient-to-br from-amber-200 to-orange-200 rounded-full blur-2xl opacity-50"></div>
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800 flex items-center gap-2 text-lg">
-                      <span className="text-2xl">✨</span> Afirmación del día
-                    </h3>
-                    <p className="text-gray-700 italic text-xl mt-2 leading-relaxed">
-                      {afirmacionDiaria}
-                    </p>
-                  </div>
-                  <button
-                    onClick={cambiarAfirmacion}
-                    className="shrink-0 text-sm bg-white/70 hover:bg-white px-4 py-2 rounded-full text-purple-700 border border-purple-200 shadow-sm transition-all hover:shadow-md hover:scale-105"
-                  >
-                    🔄 Nueva frase
-                  </button>
-                </div>
-              </div>
+              
 
               {/* Journaling rápido - con diseño más limpio */}
               <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-6 transition-all hover:shadow-xl">
@@ -319,53 +343,7 @@ export default function MindsetPage() {
               </div>
               
 
-              {/* Recursos recomendados - con hover cards */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100/80 p-5 transition-all hover:shadow-xl">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <span className="text-xl">📚</span> Recursos de mentalidad
-                  </h2>
-                  <button
-                    onClick={agregarRecurso}
-                    className="text-sm bg-orange-50 hover:bg-orange-100 text-orange-600 px-3 py-1.5 rounded-full transition-all flex items-center gap-1"
-                  >
-                    + Añadir
-                  </button>
-                </div>
-                <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar">
-                  {recursos.map((recurso) => (
-                    <div
-                      key={recurso.id}
-                      className="group relative flex items-center gap-3 p-3 rounded-xl bg-gray-50/50 hover:bg-white cursor-pointer transition-all duration-200 hover:shadow-md border border-transparent hover:border-orange-100"
-                      onClick={() => window.open(recurso.url, "_blank")}
-                    >
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          eliminarRecurso(recurso.id);
-                        }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center shadow-md hover:scale-110"
-                      >
-                        ✕
-                      </button>
-                      <div className="w-10 h-10 flex items-center justify-center text-xl bg-white rounded-full shadow-sm">
-                        {recurso.categoria.charAt(0)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-800 truncate">
-                          {recurso.nombre}
-                        </p>
-                        <span className="text-xs text-gray-400">
-                          {recurso.categoria}
-                        </span>
-                      </div>
-                      <span className="text-gray-300 text-sm group-hover:translate-x-1 transition-transform">
-                        →
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              
 
               {/* Tip del día - con borde decorativo */}
               <div className="relative bg-gradient-to-br from-amber-50/80 to-yellow-50/80 backdrop-blur-sm rounded-3xl shadow-md border border-amber-200/60 p-5 overflow-hidden">

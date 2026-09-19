@@ -116,7 +116,7 @@ export default function InfluenciaPage() {
                 <div className="mb-5">
                   <div className="flex items-center gap-2">
                     <a
-                      href="https://unprompted.top/es/"
+                      href="https://docs.google.com/document/d/1U0XhbAQnTAmu2KyHFNPsOTxd0nqW1SgLQrz3H0d2WQU/edit?usp=sharing"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center gap-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-md transition-all hover:-translate-y-0.5"
@@ -126,6 +126,36 @@ export default function InfluenciaPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-semibold text-gray-800 group-hover:text-blue-600 transition">Documento</p>
+                        <p className="text-xs text-gray-500">Explicacion y mejora en el habla</p>
+                      </div>
+                      <span className="text-gray-300 group-hover:text-blue-500 transition text-sm">→</span>
+                    </a>
+                    <a
+                      href="https://miro.com/app/board/uXjVH6_7PYI=/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-md transition-all hover:-translate-y-0.5"
+                    >
+                      <div className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm text-2xl">
+                        📒
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-800 group-hover:text-blue-600 transition">Miro</p>
+                        <p className="text-xs text-gray-500">Explicacion y mejora en el habla</p>
+                      </div>
+                      <span className="text-gray-300 group-hover:text-blue-500 transition text-sm">→</span>
+                    </a>
+                    <a
+                      href="https://miro.com/app/board/uXjVH6_7PYI=/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-md transition-all hover:-translate-y-0.5"
+                    >
+                      <div className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-sm text-2xl">
+                        🤑
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-800 group-hover:text-blue-600 transition">Vender</p>
                         <p className="text-xs text-gray-500">Explicacion y mejora en el habla</p>
                       </div>
                       <span className="text-gray-300 group-hover:text-blue-500 transition text-sm">→</span>
